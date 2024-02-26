@@ -24,13 +24,13 @@ import mongoose from "mongoose"
 
 const uri = 'mongodb+srv://mohanpathi:Starlord%40123@innovateedu.btucsuh.mongodb.net/projectX?retryWrites=true&w=majority';
 
-mongoose.connect(uri)
-  .then(() => {
-    console.log('Connected to MongoDB');
-  })
-  .catch((error) => {
-    console.error('Error connecting to MongoDB:', error.message);
-  });
+// mongoose.connect(uri)
+//   .then(() => {
+//     console.log('Connected to MongoDB');
+//   })
+//   .catch((error) => {
+//     console.error('Error connecting to MongoDB:', error.message);
+//   });
 
 
 payload.init({

@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "esnext",
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "module": "esnext",
     "skipLibCheck": true,
+    "allowJs": true,
+    "noImplicitAny": false, // Allow implicit 'any' types
 
     /* Bundler mode */
     "moduleResolution": "bundler",
