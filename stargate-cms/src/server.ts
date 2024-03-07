@@ -20,9 +20,9 @@ app.use(
   })
 );
 
-import mongoose from "mongoose"
+// import mongoose from "mongoose"
 
-const uri = 'mongodb+srv://mohanpathi:Starlord%40123@innovateedu.btucsuh.mongodb.net/projectX?retryWrites=true&w=majority';
+// const uri = 'mongodb+srv://mohanpathi:Starlord%40123@innovateedu.btucsuh.mongodb.net/projectX?retryWrites=true&w=majority';
 
 // mongoose.connect(uri)
 //   .then(() => {

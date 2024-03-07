@@ -5,7 +5,12 @@ const skillsList: string[] = [
     'Designing',
     'Architecture',
     'AnotherSkill',
-    // Add more skills as needed
+    // Add your own skills here:
+    'Communication',
+    'Teamwork',
+    'Creativity',
+    'Adaptability',
+    'Analytical Thinking',
 ];
 
 export default skillsList;
