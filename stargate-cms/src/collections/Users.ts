@@ -36,6 +36,12 @@ const Users: CollectionConfig = {
       type: "text",
       required: false,
     },
+    {
+      name: 'interests',
+      type: 'relationship',
+      relationTo: 'domains', // Make sure this matches the slug of your 'domains' collection
+      hasMany: true,
+    }
   ],
 }
 
