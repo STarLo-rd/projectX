@@ -1,54 +1,137 @@
-import React, { useState } from "react";
-import SkillCheckbox from "../../../components/skill-checkbox";
-import skillsList from "../../../utils/skillList";
-import { Button, Space } from "antd";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useAuth } from "../../../hooks/auth-context.tsx";
+import { getAuthorizationHeader } from "../../../utils/utils.ts";
+import AxiosInstance from "../../../services/axios-instance.ts";
+import {
+  addUserInterests,
+  getUserProfileByUserId,
+  modifyUserInterests,
+} from "../../../services/user-profile.ts";
+
+interface UserProfileData {
+  user: string;
+  workingHoursPerDay: number;
+  interestedBooks: string[];
+  salaryRange: string;
+  relationship: boolean;
+  behavior: string;
+  workPreference: string;
+  salaryOrWorkHard: string;
+  teamworkExperience: boolean;
+  introvert: boolean;
+}
 
 const UserProfileForm: React.FC = () => {
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const { user } = useAuth();
 
-  const submitSkills = async (selectedSkills) => {
+  const [userProfile, setUserProfile] = useState<UserProfileData>({
+    user: "",
+    workingHoursPerDay: 0,
+    interestedBooks: [],
+    salaryRange: "",
+    relationship: false,
+    behavior: "",
+    workPreference: "",
+    salaryOrWorkHard: "",
+    teamworkExperience: false,
+    introvert: false,
+  });
+
+  useEffect(() => {
+    console.log(user);
+    setUserProfile((prevUserProfile) => ({
+      ...prevUserProfile,
+      user: user.id,
+    }));
+  }, [user]);
+
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = event.target;
+    setUserProfile((prevData) => ({
+      ...prevData,
+      [name]: type === "checkbox" ? event?.target?.checked : value,
+    }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log(userProfile);
     try {
-      console.log(selectedSkills);
-      // const response = await axios.post('/api/predict', { selectedSkills });
-      // Handle successful response (e.g., display results)
-    } catch (error) {
-      // Handle error (e.g., display an error message)
-    }
-  };
+      // const response = await addUserInterests(userProfile);
 
-  const handleSkillChange = (skill: string, checked: boolean) => {
-    if (checked) {
-      setSelectedSkills([...selectedSkills, skill]);
-    } else {
-      setSelectedSkills(selectedSkills.filter((s) => s !== skill));
-    }
-  };
+      const res = await getUserProfileByUserId(userProfile.user);
+      const response = await modifyUserInterests(userProfile);
 
-  const handleClearSelection = () => {
-    setSelectedSkills([]);
+      console.log("User profile updated successfully:", response);
+      // Handle form submission succeiss (e.g., display success message)
+    } catch (error: any) {
+      console.log(error?.message);
+      console.log(error?.stack);
+      console.error("Error updating user profile:", error);
+      // Handle form submission errors (e.g., display error message)
+    }
   };
 
   return (
-    <div>
-      <h2>User Profile Form</h2>
-      <form>
-        <div>
-          <p>Select your skills:</p>
-          {skillsList.map((skill) => (
-            <SkillCheckbox
-              key={skill}
-              skill={skill}
-              onSkillChange={handleSkillChange}
-              isChecked={selectedSkills.includes(skill)} // Pass the checked state
-            />
-          ))}
-        </div>
-        <Space>
-          <Button onClick={() => submitSkills(selectedSkills)}>Submit</Button>
-          <Button onClick={handleClearSelection}>Clear</Button>
-        </Space>
+    <>
+      <form onSubmit={handleSubmit}>
+        <h2>User Profile</h2>
+        <label htmlFor="workingHoursPerDay">Working Hours per Day:</label>
+        <input
+          type="number"
+          id="workingHoursPerDay"
+          name="workingHoursPerDay"
+          value={userProfile.workingHoursPerDay}
+          onChange={handleChange}
+        />
+        <br />
+
+        <label htmlFor="interestedBooks">
+          Interested Books (Comma separated):
+        </label>
+        <br />
+
+        <label htmlFor="salaryRange">Salary Range:</label>
+        <input
+          type="text"
+          id="salaryRange"
+          name="salaryRange"
+          value={userProfile.salaryRange}
+          onChange={handleChange}
+        />
+        <br />
+
+        <label>
+          <input
+            type="checkbox"
+            id="relationship"
+            name="relationship"
+            checked={userProfile.relationship}
+            onChange={handleChange}
+          />
+          In a Relationship?
+        </label>
+        <br />
+
+        <label htmlFor="behavior">Gentle or Tuff Behavior?:</label>
+        <select
+          id="behavior"
+          name="behavior"
+          value={userProfile.behavior}
+          onChange={handleChange}
+        >
+          <option value="">Select</option>
+          <option value="Gentle">Gentle</option>
+          <option value="Tuff">Tuff</option>
+        </select>
+        <br />
+        <button type="submit">submit</button>
       </form>
-    </div>
+    </>
   );
 };
 

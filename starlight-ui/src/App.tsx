@@ -1,21 +1,20 @@
-import { Route, Routes } from 'react-router-dom';
-import './App.css'
-import { authRoutes, unAuthRoutes } from './routes'
-import { RequireAuth } from './hooks/auth-context';
-
+import { Route, Routes } from "react-router-dom";
+import "./App.css";
+import { authRoutes, unAuthRoutes } from "./routes";
+import { RequireAuth, useAuth } from "./hooks/auth-context";
+import { useEffect } from "react";
 
 function App() {
-
-
+  const { setCurrentUser } = useAuth();
+  useEffect(() => {
+    setCurrentUser();
+    // eslint-disable-next-line
+  }, []);
   const routeItems = authRoutes.map((route) => (
     <Route
       key={route.id} // Provide a unique key for each route
       path={route.path}
-      element={
-        <RequireAuth>
-          {route.element}
-        </RequireAuth>
-      }
+      element={<RequireAuth>{route.element}</RequireAuth>}
     />
   ));
   const aunAuthRouteItems = unAuthRoutes.map((route) => {
@@ -29,7 +28,7 @@ function App() {
         {aunAuthRouteItems}
       </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

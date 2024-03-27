@@ -5,14 +5,9 @@ import authService, {
   IUserAuthInfo,
   getCurrentUser,
 } from "../services/authentication";
-import {
-  CurrentUser,
-  IChangePasswordInfo,
-  IResetPasswordInfo,
-} from "../types";
+import { CurrentUser, IChangePasswordInfo, IResetPasswordInfo } from "../types";
 import darkImage from "../images/skuchain_w350-100.png";
 import lightImage from "../images/skublu_dark.png";
-import { TOKEN } from "../constants/constant-values";
 interface AuthContextType {
   user: CurrentUser;
   isDarkMode: any;
@@ -30,9 +25,6 @@ interface AuthContextType {
   getUserById: (id: string) => any;
   changeUserPassword: (data: IResetPasswordInfo) => any;
 }
-
-
-
 
 /**
  * Utilizing `Context` to pass values related to user auth status
@@ -90,11 +82,9 @@ export function AuthProvider({
     return res;
   };
 
-
   const handleToggle = (checked: boolean) => {
     setIsDarkMode(checked);
   };
-
 
   const logout = async () => {
     const res = await authService.logout();
@@ -105,14 +95,7 @@ export function AuthProvider({
   const setCurrentUser = async () => {
     const userData = await getCurrentUser();
     setUser(userData?.user);
-    const token = window.localStorage.getItem(TOKEN);
-    if (token) {
-      if (userData?.user?.tenants?.value) {
-        window.localStorage.setItem("tenant", userData?.user?.tenants?.value);
-      }
-    }
   };
-
 
   const sendRequestAccount = async (data: any) => {
     const res = await authService.sendRequestAccount(data);
@@ -133,7 +116,6 @@ export function AuthProvider({
     const res = await authService.changeUserPassword(data);
     return res;
   };
-
 
   const value = {
     user,

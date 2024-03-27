@@ -130,6 +130,7 @@ export const verifyResetToken = async (id: string) => {
 
 export const getCurrentUser = async () => {
     const token = localStorage.getItem(TOKEN);
+    console.log(token);
     if (token) {
         const { data } = await AxiosInstance.get<{
             user: CurrentUser;
