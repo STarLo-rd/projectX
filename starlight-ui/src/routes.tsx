@@ -1,5 +1,6 @@
 import Dashboard from "./pages/dashboard";
 import Login from "./pages/login";
+import RoadMap from "./pages/roadmap";
 import UserProfileForm from "./pages/user-profile/userprofile-form";
 
 export const authRoutes = [
@@ -13,6 +14,12 @@ export const authRoutes = [
     path: "/userprofile",
     id: "userprofile",
     element: <UserProfileForm />,
+    breadcrumbName: "Home",
+  },
+  {
+    path: "/roadmap",
+    id: "userprofile",
+    element: <RoadMap />,
     breadcrumbName: "Home",
   },
   // {
