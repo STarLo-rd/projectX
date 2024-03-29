@@ -17,9 +17,141 @@ const generateRoadmap: RequestHandler<DefaultParams, any, any> = async (
         console.log(req.body)
         const { interest } = req.body
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-        const prompt = `create a complete roadmap for ${interest} in the form of plantUml code`;
+        const prompt = `create a clean and complete detailed roadmap for ${interest} to be advanced in ${interest} everything you know
+        generate  in the form of following
+        sample -
+        [
+          {
+            name: "Gaurang Torvekar",
+            attributes: {
+              keyA: "val A",
+              keyB: "val B",
+              keyC: "val C",
+            },
+            children: [
+              {
+                name: "Avadhoot",
+                attributes: {
+                  keyA: "val A",
+                  keyB: "val B",
+                  keyC: "val C",
+                },
+                children: [
+                  {
+                    name: "Richard",
+                  },
+                  {
+                    name: "Constantine",
+                    children: [
+                      {
+                        name: "Mia",
+                      },
+                    ],
+                  },
+                  {
+                    name: "Daniel",
+                  },
+                ],
+              },
+              {
+                name: "Mia",
+              },
+              {
+                name: "Varun",
+                attributes: {
+                  keyA: "val A",
+                  keyB: "val B",
+                  keyC: "val C",
+                },
+                children: [
+                  {
+                    name: "Ivo",
+                    attributes: {
+                      keyA: "val A",
+                      keyB: "val B",
+                      keyC: "val C",
+                    },
+                    children: [
+                      {
+                        name: "Level 2: A",
+                        attributes: {
+                          keyA: "val A",
+                          keyB: "val B",
+                          keyC: "val C",
+                        },
+                        children: [
+                          {
+                            name: "Level 2: A",
+                            attributes: {
+                              keyA: "val A",
+                              keyB: "val B",
+                              keyC: "val C",
+                            },
+                          },
+                          {
+                            name: "Level 2: B",
+                          },
+                        ],
+                      },
+                      {
+                        name: "Level 2: B",
+                      },
+                    ],
+                  },
+                  {
+                    name: "Vijay",
+                  },
+                ],
+              },
+              {
+                name: "Mohit",
+                children: [
+                  {
+                    name: "Rohit",
+                    attributes: {
+                      keyA: "val A",
+                      keyB: "val B",
+                      keyC: "val C",
+                    },
+                    children: [
+                      {
+                        name: "Level 2: A",
+                        attributes: {
+                          keyA: "val A",
+                          keyB: "val B",
+                          keyC: "val C",
+                        },
+                        children: [
+                          {
+                            name: "Level 2: A",
+                            attributes: {
+                              keyA: "val A",
+                              keyB: "val B",
+                              keyC: "val C",
+                            },
+                          },
+                          {
+                            name: "Level 2: B",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    name: "Pranav",
+                  },
+                ],
+              },
+            ],
+          },
+        ];
+        
+        generate in the form stringified object 
+        do not endcode in like md 
+        `;
         const result = await model.generateContent(prompt);
         const response = await result.response;
+        console.log(response);
         const text = await response.text();
         return res.json({ text });
     } catch (err) {

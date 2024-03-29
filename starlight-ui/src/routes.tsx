@@ -1,5 +1,6 @@
 import Dashboard from "./pages/dashboard";
 import Login from "./pages/login";
+import ReactFlowPage from "./pages/react-flow";
 import RoadMap from "./pages/roadmap";
 import UserProfileForm from "./pages/user-profile/userprofile-form";
 
@@ -20,6 +21,12 @@ export const authRoutes = [
     path: "/roadmap",
     id: "userprofile",
     element: <RoadMap />,
+    breadcrumbName: "Home",
+  },
+  {
+    path: "/reactflow",
+    id: "reactflow",
+    element: <ReactFlowPage />,
     breadcrumbName: "Home",
   },
   // {
