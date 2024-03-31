@@ -1,0 +1,445 @@
+import React from "react";
+import Tree from "react-d3-tree";
+
+const myTreeData = [
+  {
+    name: "Web Development",
+    description: "The practice of building websites and web applications.",
+    children: [
+      {
+        name: "HTML",
+        description: "The standard markup language for creating web pages.",
+        children: [
+          {
+            name: "Introduction to HTML",
+            description: "Basics of HTML for beginners.",
+            children: [
+              {
+                name: "What is HTML?",
+                description: "Understanding the concept of HTML.",
+              },
+              // ... other children nodes
+            ],
+          },
+          {
+            name: "Advanced HTML",
+            description: "Advanced topics in HTML.",
+            children: [
+              {
+                name: "Semantic HTML",
+                description:
+                  "Using HTML elements for better structure and meaning.",
+              },
+              // ... other children nodes
+            ],
+          },
+        ],
+      },
+    ],
+  },
+];
+
+const Graphs = () => {
+  return (
+    <div>
+      <div className="App">
+        <h1>Web Development Curriculum</h1>
+        <div id="treeWrapper" style={{ width: "100%", height: "100vh" }}>
+          {myTreeData.length && (
+            <Tree
+              data={myTreeData}
+              orientation="vertical"
+              nodeSvgShape={{ shape: "circle", shapeProps: { r: 10 } }}
+              pathFunc="step"
+              separation={{ siblings: 2, nonSiblings: 2 }}
+              translate={{ x: 650, y: 100 }}
+              allowForeignObjects={true}
+              initialDepth={0.02}
+              renderCustomNodeElement={(props) => renderNodeElement(props)}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const renderNodeElement = ({ nodeDatum, toggleNode }) => (
+  <g>
+    <circle r={10} fill="lightblue" onClick={toggleNode} />
+    <text fill="black" strokeWidth="1" x={15}>
+      {nodeDatum.name}
+    </text>
+    {nodeDatum.description && (
+      <text fill="gray" strokeWidth="1" x={15} dy={20}>
+        {nodeDatum.description}
+      </text>
+    )}
+  </g>
+);
+
+export default Graphs;
+
+
+
+
+_____________________________________________
+
+import React, { useState } from "react";
+import Tree from "react-d3-tree";
+
+const myTreeData = [
+  {
+    name: "Web Development",
+    description: "The practice of building websites and web applications.",
+    children: [
+      {
+        name: "HTML",
+        description: "The standard markup language for creating web pages.",
+        children: [
+          {
+            name: "Introduction to HTML",
+            description: "Basics of HTML for beginners.",
+            children: [
+              {
+                name: "What is HTML?",
+                description: "Understanding the concept of HTML.",
+              },
+              // ... other children nodes
+            ],
+          },
+          {
+            name: "Advanced HTML",
+            description: "Advanced topics in HTML.",
+            children: [
+              {
+                name: "Semantic HTML",
+                description:
+                  "Using HTML elements for better structure and meaning.",
+              },
+              // ... other children nodes
+            ],
+          },
+        ],
+      },
+    ],
+  },
+];
+
+const Graphs2 = () => {
+  const [selectedNode, setSelectedNode] = useState(null);
+
+  const handleNodeClick = (nodeDatum) => {
+    setSelectedNode(nodeDatum);
+    console.log(`Clicked node: ${nodeDatum.name}`);
+  };
+  return (
+    <div>
+      <div className="App">
+        <h1>Web Development Curriculum</h1>
+        <div id="treeWrapper" style={{ width: "100%", height: "100vh" }}>
+          {myTreeData.length && (
+            <Tree
+              data={myTreeData}
+              orientation="vertical"
+              nodeSvgShape={{
+                shape: "rect",
+                shapeProps: {
+                  width: 200,
+                  height: 100,
+                  x: -100,
+                  y: -50,
+                  rx: 10,
+                },
+              }}
+              pathFunc="step"
+              separation={{ siblings: 2, nonSiblings: 2 }}
+              translate={{ x: 650, y: 100 }}
+              allowForeignObjects={true}
+              initialDepth={0.08}
+              renderCustomNodeElement={(props) =>
+                renderNodeElement(props, selectedNode, handleNodeClick)
+              }
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const renderNodeElement = (
+  { nodeDatum, toggleNode },
+  selectedNode,
+  handleNodeClick
+) => (
+  <g>
+    <rect
+      width={200}
+      height={100}
+      x={-100}
+      y={-50}
+      rx={10}
+      fill={
+        selectedNode === nodeDatum
+          ? "red"
+          : nodeDatum.children
+          ? "lightblue"
+          : "white"
+      }
+      stroke="black"
+      strokeWidth={2}
+      //   onClick={toggleNode}
+      onClick={() => {
+        handleNodeClick(nodeDatum);
+        toggleNode();
+      }}
+    />
+    <text
+      fill="black"
+      x={-90}
+      y={-30}
+      fontSize={16}
+      textAnchor="start"
+      startOffset={10}
+    >
+      {nodeDatum.name}
+    </text>
+    {nodeDatum.description && (
+      <text
+        fill="gray"
+        x={-90}
+        y={-10}
+        fontSize={12}
+        textAnchor="start"
+        startOffset={10}
+        width={120}
+      >
+        {nodeDatum.description}
+      </text>
+    )}
+  </g>
+);
+
+export default Graphs2;
+
+
+
+
+
+
+
+_____________________________________________
+
+
+
+import React, { useState } from "react";
+import Tree from "react-d3-tree";
+
+const myTreeData = [
+  {
+    name: "Web Development",
+    description: "The practice of building websites and web applications.",
+    children: [
+      {
+        name: "HTML",
+        description: "The standard markup language for creating web pages.",
+        children: [
+          {
+            name: "Introduction to HTML",
+            description: "Basics of HTML for beginners.",
+            children: [
+              {
+                name: "What is HTML?",
+                description: "Understanding the concept of HTML.",
+              },
+              // ... other children nodes
+            ],
+          },
+          {
+            name: "Advanced HTML",
+            description: "Advanced topics in HTML.",
+            children: [
+              {
+                name: "Semantic HTML",
+                description:
+                  "Using HTML elements for better structure and meaning.",
+              },
+              // ... other children nodes
+            ],
+          },
+        ],
+      },
+    ],
+  },
+];
+
+const Graphs2 = () => {
+  const [selectedNode, setSelectedNode] = useState(null);
+
+  const handleNodeClick = (nodeDatum) => {
+    setSelectedNode(nodeDatum);
+    console.log(`Clicked node: ${nodeDatum.name}`);
+  };
+  return (
+    <div>
+      <div className="App">
+        <h1>Web Development Curriculum</h1>
+        <div id="treeWrapper" style={{ width: "100%", height: "100vh" }}>
+          {myTreeData.length && (
+            <Tree
+              data={myTreeData}
+              orientation="vertical"
+              nodeSvgShape={{ shape: "circle", shapeProps: { r: 10 } }}
+              pathFunc="step"
+              separation={{ siblings: 2, nonSiblings: 2 }}
+              translate={{ x: 650, y: 100 }}
+              allowForeignObjects={true}
+              initialDepth={0.02}
+              renderCustomNodeElement={(props) =>
+                renderNodeElement(props, selectedNode)
+              }
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const renderNodeElement = ({ nodeDatum, toggleNode }, selectedNode) => (
+  <g>
+    <circle
+      r={10}
+      fill={nodeDatum.children ? "red" : "black"}
+      onClick={toggleNode}
+    />
+    <text fill="black" strokeWidth="1" x={15}>
+      {nodeDatum.name}
+    </text>
+    {nodeDatum.description && (
+      <text fill="gray" strokeWidth="1" x={15} dy={20}>
+        {nodeDatum.description}
+      </text>
+    )}
+  </g>
+);
+
+export default Graphs2;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+_____________________________________________________________
+
+
+import React, { useState } from "react";
+import Tree from "react-d3-tree";
+
+const myTreeData = [
+  {
+    name: "Web Development",
+    description: "The practice of building websites and web applications.",
+    children: [
+      {
+        name: "HTML",
+        description: "The standard markup language for creating web pages.",
+        children: [
+          {
+            name: "Introduction to HTML",
+            description: "Basics of HTML for beginners.",
+            children: [
+              {
+                name: "What is HTML?",
+                description: "Understanding the concept of HTML.",
+              },
+              // ... other children nodes
+            ],
+          },
+          {
+            name: "Advanced HTML",
+            description: "Advanced topics in HTML.",
+            children: [
+              {
+                name: "Semantic HTML",
+                description:
+                  "Using HTML elements for better structure and meaning.",
+              },
+              // ... other children nodes
+            ],
+          },
+        ],
+      },
+    ],
+  },
+];
+
+const Graphs2 = () => {
+  const [selectedNode, setSelectedNode] = useState(null);
+
+  const handleNodeClick = (nodeDatum) => {
+    setSelectedNode(nodeDatum);
+    console.log(`Clicked node: ${nodeDatum.name}`);
+  };
+  return (
+    <div>
+      <div className="App">
+        <h1>Web Development Curriculum</h1>
+        <div id="treeWrapper" style={{ width: "100%", height: "100vh" }}>
+          {myTreeData.length && (
+            <Tree
+              data={myTreeData}
+              orientation="vertical"
+              nodeSvgShape={{ shape: "circle", shapeProps: { r: 10 } }}
+              pathFunc="step"
+              separation={{ siblings: 3, nonSiblings: 3 }}
+              translate={{ x: 350, y: 100 }}
+              allowForeignObjects={true}
+              initialDepth={0.02}
+              renderCustomNodeElement={(props) =>
+                renderNodeElement(props, selectedNode, handleNodeClick)
+              }
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const renderNodeElement = (
+  { nodeDatum, toggleNode },
+  selectedNode,
+  handleNodeClick
+) => (
+  <g>
+    <circle
+      r={10}
+      fill={nodeDatum.children ? "orange" : "black"}
+      onClick={() => {
+        toggleNode();
+        handleNodeClick(nodeDatum);
+      }}
+    />
+    <text fill="black" strokeWidth="0.7" x={15}>
+      {nodeDatum.name}
+    </text>
+    {nodeDatum.description && (
+      <text fill="gray" color="lightgrey" strokeWidth="0.7" x={15} dy={20}>
+        {nodeDatum.description}
+      </text>
+    )}
+  </g>
+);
+
+export default Graphs2;

@@ -9,136 +9,323 @@ const genAI = new GoogleGenerativeAI("AIzaSyBWABGD2ryXU63Y7qHhKEEC1SMaaIlaBIM");
 
 
 const generateRoadmap: RequestHandler<DefaultParams, any, any> = async (
-    req,
-    res,
-    _next
+  req,
+  res,
+  _next
 ) => {
-    try {
-        console.log(req.body)
-        const { interest } = req.body
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-        const prompt = `create a clean and complete detailed roadmap for ${interest} to be advanced in ${interest} everything you know
+  try {
+    console.log(req.body)
+    const { interest } = req.body
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const prompt = `create a clean and complete detailed roadmap for ${interest} to be advanced in ${interest} everything you know
         generate  in the form of following
         sample -
         [
           {
-            name: "Gaurang Torvekar",
-            attributes: {
-              keyA: "val A",
-              keyB: "val B",
-              keyC: "val C",
-            },
+            name: "web dev",
             children: [
               {
-                name: "Avadhoot",
-                attributes: {
-                  keyA: "val A",
-                  keyB: "val B",
-                  keyC: "val C",
-                },
+                name: "HTML",
                 children: [
                   {
-                    name: "Richard",
-                  },
-                  {
-                    name: "Constantine",
+                    name: "Introduction to HTML",
                     children: [
                       {
-                        name: "Mia",
+                        name: "What is HTML?",
+                      },
+                      {
+                        name: "HTML Document Structure",
+                      },
+                      {
+                        name: "Elements and Tags",
+                      },
+                      {
+                        name: "Attributes",
+                      },
+                      {
+                        name: "Headings and Paragraphs",
+                      },
+                      {
+                        name: "Lists",
+                      },
+                      {
+                        name: "Links",
+                      },
+                      {
+                        name: "Images",
+                      },
+                      {
+                        name: "Tables",
+                      },
+                      {
+                        name: "Forms",
                       },
                     ],
                   },
                   {
-                    name: "Daniel",
+                    name: "Advanced HTML",
+                    children: [
+                      {
+                        name: "Semantic HTML",
+                      },
+                      {
+                        name: "Responsive Web Design",
+                      },
+                      {
+                        name: "Accessibility",
+                      },
+                      {
+                        name: "HTML5",
+                      },
+                    ],
                   },
                 ],
               },
               {
-                name: "Mia",
-              },
-              {
-                name: "Varun",
-                attributes: {
-                  keyA: "val A",
-                  keyB: "val B",
-                  keyC: "val C",
-                },
+                name: "CSS",
                 children: [
                   {
-                    name: "Ivo",
-                    attributes: {
-                      keyA: "val A",
-                      keyB: "val B",
-                      keyC: "val C",
-                    },
+                    name: "Introduction to CSS",
                     children: [
                       {
-                        name: "Level 2: A",
-                        attributes: {
-                          keyA: "val A",
-                          keyB: "val B",
-                          keyC: "val C",
-                        },
-                        children: [
-                          {
-                            name: "Level 2: A",
-                            attributes: {
-                              keyA: "val A",
-                              keyB: "val B",
-                              keyC: "val C",
-                            },
-                          },
-                          {
-                            name: "Level 2: B",
-                          },
-                        ],
+                        name: "What is CSS?",
                       },
                       {
-                        name: "Level 2: B",
+                        name: "CSS Syntax",
+                      },
+                      {
+                        name: "Selectors",
+                      },
+                      {
+                        name: "Properties",
+                      },
+                      {
+                        name: "Values",
+                      },
+                      {
+                        name: "Units",
+                      },
+                      {
+                        name: "Color",
+                      },
+                      {
+                        name: "Background",
+                      },
+                      {
+                        name: "Text",
+                      },
+                      {
+                        name: "Display",
+                      },
+                      {
+                        name: "Positioning",
+                      },
+                      {
+                        name: "Float",
+                      },
+                      {
+                        name: "Clear",
+                      },
+                      {
+                        name: "Overflow",
                       },
                     ],
                   },
                   {
-                    name: "Vijay",
+                    name: "Advanced CSS",
+                    children: [
+                      {
+                        name: "CSS3",
+                      },
+                      {
+                        name: "Responsive Web Design",
+                      },
+                      {
+                        name: "CSS Preprocessors",
+                      },
+                      {
+                        name: "CSS Frameworks",
+                      },
+                    ],
                   },
                 ],
               },
               {
-                name: "Mohit",
+                name: "JavaScript",
                 children: [
                   {
-                    name: "Rohit",
-                    attributes: {
-                      keyA: "val A",
-                      keyB: "val B",
-                      keyC: "val C",
-                    },
+                    name: "Introduction to JavaScript",
                     children: [
                       {
-                        name: "Level 2: A",
-                        attributes: {
-                          keyA: "val A",
-                          keyB: "val B",
-                          keyC: "val C",
-                        },
-                        children: [
-                          {
-                            name: "Level 2: A",
-                            attributes: {
-                              keyA: "val A",
-                              keyB: "val B",
-                              keyC: "val C",
-                            },
-                          },
-                          {
-                            name: "Level 2: B",
-                          },
-                        ],
+                        name: "What is JavaScript?",
+                      },
+                      {
+                        name: "JavaScript Syntax",
+                      },
+                      {
+                        name: "Variables",
+                      },
+                      {
+                        name: "Operators",
+                      },
+                      {
+                        name: "Control Flow",
+                      },
+                      {
+                        name: "Functions",
+                      },
+                      {
+                        name: "Arrays",
+                      },
+                      {
+                        name: "Objects",
+                      },
+                      {
+                        name: "Events",
+                      },
+                      {
+                        name: "Document Object Model (DOM)",
                       },
                     ],
                   },
                   {
-                    name: "Pranav",
+                    name: "Advanced JavaScript",
+                    children: [
+                      {
+                        name: "ES6",
+                      },
+                      {
+                        name: "Asynchronous Programming",
+                      },
+                      {
+                        name: "Object-Oriented JavaScript",
+                      },
+                      {
+                        name: "Design Patterns",
+                      },
+                      {
+                        name: "JavaScript Frameworks",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                name: "Back-End Development",
+                children: [
+                  {
+                    name: "Introduction to Back-End Development",
+                    children: [
+                      {
+                        name: "What is Back-End Development?",
+                      },
+                      {
+                        name: "Server-Side Programming",
+                      },
+                      {
+                        name: "Databases",
+                      },
+                      {
+                        name: "APIs",
+                      },
+                      {
+                        name: "Deployment",
+                      },
+                    ],
+                  },
+                  {
+                    name: "Popular Back-End Languages",
+                    children: [
+                      {
+                        name: "Node.js",
+                      },
+                      {
+                        name: "Python",
+                      },
+                      {
+                        name: "Java",
+                      },
+                      {
+                        name: "PHP",
+                      },
+                    ],
+                  },
+                  {
+                    name: "Popular Back-End Frameworks",
+                    children: [
+                      {
+                        name: "Express.js",
+                      },
+                      {
+                        name: "Flask",
+                      },
+                      {
+                        name: "Django",
+                      },
+                      {
+                        name: "Laravel",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                name: "Full-Stack Development",
+                children: [
+                  {
+                    name: "What is Full-Stack Development?",
+                  },
+                  {
+                    name: "Skills Required for Full-Stack Development",
+                  },
+                  {
+                    name: "Popular Full-Stack Frameworks",
+                    children: [
+                      {
+                        name: "MEAN Stack",
+                      },
+                      {
+                        name: "MERN Stack",
+                      },
+                      {
+                        name: "LAMP Stack",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                name: "Other Essential Skills",
+                children: [
+                  {
+                    name: "Version Control",
+                  },
+                  {
+                    name: "Git",
+                  },
+                  {
+                    name: "GitHub",
+                  },
+                  {
+                    name: "Testing",
+                  },
+                  {
+                    name: "Debugging",
+                  },
+                  {
+                    name: "Performance Optimization",
+                  },
+                  {
+                    name: "Security",
+                  },
+                  {
+                    name: "Deployment",
+                  },
+                  {
+                    name: "Communication",
+                  },
+                  {
+                    name: "Problem-Solving",
                   },
                 ],
               },
@@ -146,19 +333,18 @@ const generateRoadmap: RequestHandler<DefaultParams, any, any> = async (
           },
         ];
         
-        generate in the form stringified object 
+        generate in the form stringified object in an array form
         do not endcode in like md 
         `;
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        console.log(response);
-        const text = await response.text();
-        return res.json({ text });
-    } catch (err) {
-        payload.logger.error(err.message);
-        payload.logger.error(err.data);
-        return res.status(500).send(err.message);
-    }
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = await response.text();
+    return res.json({ text });
+  } catch (err) {
+    payload.logger.error(err.message);
+    payload.logger.error(err.data);
+    return res.status(500).send(err.message);
+  }
 };
 
 export { generateRoadmap };
