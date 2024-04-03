@@ -9,13 +9,14 @@ import { buildConfig } from 'payload/config'
 import Users from './collections/Users'
 import Domains from './collections/Domains'; // Import the 'domains' collection
 import UserProfile from './collections/User-Profile'
+import RoadMap from './collections/Roadmap'
 export default buildConfig({
   admin: {
     user: Users.slug,
     bundler: webpackBundler(),
   },
   editor: slateEditor({}),
-  collections: [Users, Domains, UserProfile],
+  collections: [Users, Domains, UserProfile, RoadMap],
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
