@@ -16,7 +16,7 @@ const RoadMap: CollectionConfig = {
         },
         {
             name: 'data',
-            type: 'json',
+            type: 'text',
             required: true,
         },
     ],

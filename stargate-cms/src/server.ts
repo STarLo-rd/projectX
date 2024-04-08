@@ -2,6 +2,7 @@ import express from "express";
 import payload from "payload";
 import cors from "cors";
 import roadmapRouter from "./routes/roadmap";
+import explainRouter from "./routes/explainTopic";
 
 require("dotenv").config();
 const app = express();
@@ -47,6 +48,7 @@ payload.init({
 
 // app.use("/api/user", profileRouter);
 app.use("/api/roadmap", roadmapRouter);
+app.use("/api/explain", explainRouter);
 
 app.listen(process.env.PAYLOAD_PORT, () => {
   console.log(`Server is listening on port ${process.env.PAYLOAD_PORT}`);
