@@ -4,17 +4,7 @@ import { PROJECTX_API_URL } from "../constants/global";
 
 
 const baseURL = PROJECTX_API_URL;
-// const checkJWTExpired = () => {
-//     const jwt = localStorage.getItem(TOKEN);
-
-//     if (!jwt) {
-//         return false;
-//     }
-
-//     const payload: unknown = jwt_decode(jwt);
-//     const expired = Date.now() >= payload.exp * 1000;
-//     return expired;
-// };
+              
 
 const AxiosInstance = axios.create({
     baseURL,

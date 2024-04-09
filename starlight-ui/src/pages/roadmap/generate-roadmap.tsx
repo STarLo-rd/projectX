@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Tree from "react-d3-tree";
-import { getAuthorizationHeader } from "../../utils/utils";
-import AxiosInstance from "../../services/axios-instance";
 import { renderNodeElement } from "./node-element";
 import { useAuth } from "../../hooks/auth-context";
+import {
+  generateRoadmap,
+  getUserRoadmap,
+  saveRoadmap,
+} from "../../services/roadmap";
+import { notification } from "antd";
 
 // const sampleTreeData = [
 //   {
@@ -239,8 +243,6 @@ const RoadMap = () => {
 
   const handleNodeClick = async (nodeDatum) => {
     setSelectedNode(nodeDatum);
-    console.log(`Clicked node: ${nodeDatum.name}`);
-    console.log("hasChildren", nodeDatum.children);
 
     if (nodeDatum.name && !nodeDatum.children) {
       // Construct the interest based on the clicked node
@@ -250,62 +252,40 @@ const RoadMap = () => {
 
       // Fetch additional data based on the new interest
       // const newData = await fetchRoadMap(newInterest);
-      const newData = await fetchRoadMap(newInterest);
+      const newData = await generateRoadmap(newInterest);
 
       // Update the tree structure by adding new data as children of the clicked node
       if (newData.length) {
         const updatedData = appendChildren(myTreeData, nodeDatum.name, newData);
-        console.log("updatedData", updatedData);
         // Update the state to re-render the tree with the expanded node
         setMyTreeData(updatedData);
       }
     }
   };
 
-  // const handleNodeClick = (nodeDatum) => {
-  //   setSelectedNode(nodeDatum);
-  //   console.log(`Clicked node: ${nodeDatum.name}`);
-  // };
-
-  const fetchRoadMap = async (interest: string) => {
-    const response = await AxiosInstance.post(
-      "/roadmap/generate",
-      { interest: interest },
-      {
-        headers: getAuthorizationHeader(),
-      }
-    );
-
-    console.log(response.data);
-    const data = response.data.text;
-    console.log(data);
-    if (data) {
-      // Parsing the JSON string into a JavaScript object
-      const jsonObject = JSON.parse(data);
-      console.log(jsonObject);
-      // setMyTreeData(jsonObject);
-
-      return jsonObject;
+  const getRoadmap = async () => {
+    const roadmap = await getUserRoadmap(user.email);
+    console.log(roadmap);
+    if (roadmap && roadmap.data) {
+      setMyTreeData(JSON.parse(roadmap.data) || []);
     }
   };
 
-  const handleRoadmap = async (interest) => {
-    const data = await fetchRoadMap(interest);
+  useEffect(() => {
+    getRoadmap();
+  }, [user]);
+
+  const handleRoadmap = async (interest: string) => {
+    const data = await generateRoadmap(interest);
     setMyTreeData(data);
   };
-  // useEffect(() => {
-  //   // fetchRoadMap("python");
-  // }, [fetchRoadMap]);
-  const saveRoadmap = async () => {
-    const { data } = await AxiosInstance.post(
-      `/roadmaps`,
-      { user: user.email, data: { data: myTreeData } },
-      {
-        headers: getAuthorizationHeader(),
-      }
-    );
 
-    console.log(data);
+  const addRoadmap = async () => {
+    const data = await saveRoadmap(user, JSON.stringify(myTreeData));
+    notification.success({
+      message: data.message,
+      duration: 5,
+    });
   };
   return (
     <div>
@@ -319,7 +299,7 @@ const RoadMap = () => {
       </div>
       <div className="App">
         <h1>org Chart</h1>
-        <button onClick={saveRoadmap}>save your roadmap</button>
+        <button onClick={addRoadmap}>save your roadmap</button>
         <div id="treeWrapper" style={{ width: "100%", height: "100vh" }}>
           {myTreeData.length && (
             <Tree

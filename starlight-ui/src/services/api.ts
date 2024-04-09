@@ -62,10 +62,4 @@ export const postRequest = async <T = any>(
     return newDocument;
 };
 
-export const getRequestForGlobal = async <T = any>(globalSlug: string) => {
-    const url = `/globals/${globalSlug}`;
-    const { data } = await AxiosInstance.get<T>(url, {
-        headers: getAuthorizationHeader(),
-    });
-    return data;
-};
+
