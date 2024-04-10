@@ -3,14 +3,17 @@ import React, { useState } from "react";
 import { Button, Input, notification } from "antd";
 import AxiosInstance from "../../services/axios-instance";
 import { getAuthorizationHeader } from "../../utils/utils";
+import { Skeleton, Typography } from "antd";
 
 const ExplainTopic: React.FC = () => {
   const [topic, setTopic] = useState("");
   const [data, setData] = useState("");
   const [summarizedData, setSummarizedData] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleTopicSubmit = async () => {
     try {
+      setLoading(true);
       const response = await AxiosInstance.post(
         "/explain/topic",
         { interest: topic },
@@ -24,6 +27,7 @@ const ExplainTopic: React.FC = () => {
         .replace(/\*\*(.*?)\*\*/g, (_, p1) => p1)
         .replace(/\n\n/g, "\n");
       setData(compiledText);
+      setLoading(false);
     } catch (error) {
       handleRequestError(error);
     }
@@ -63,9 +67,10 @@ const ExplainTopic: React.FC = () => {
         </Button>
       </div>
       <div>
-        {data && (
+        {loading && <Skeleton active paragraph={{ rows: 8 }} />}
+        {!loading && data && (
           <div>
-            <h2>Data for Complex Topic</h2>
+            <h2>{topic}</h2>
             <p>{data}</p>
             <Button type="primary" onClick={handleSummarize}>
               Summarize
