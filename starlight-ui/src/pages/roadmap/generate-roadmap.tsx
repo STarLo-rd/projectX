@@ -7,221 +7,20 @@ import {
   getUserRoadmap,
   saveRoadmap,
 } from "../../services/roadmap";
-import { notification } from "antd";
-
-// const sampleTreeData = [
-//   {
-//     name: "React JS",
-//     children: [
-//       {
-//         name: "Introduction to React JS",
-//         children: [
-//           {
-//             name: "What is React JS?",
-//           },
-//           {
-//             name: "Benefits of Using React JS",
-//           },
-//           {
-//             name: "Prerequisites for Learning React JS",
-//           },
-//           {
-//             name: "Setting up Your Development Environment",
-//           },
-//         ],
-//       },
-//       {
-//         name: "Core Concepts of React JS",
-//         children: [
-//           {
-//             name: "Components",
-//           },
-//           {
-//             name: "Props",
-//           },
-//           {
-//             name: "State",
-//           },
-//           {
-//             name: "Lifecycle Methods",
-//           },
-//           {
-//             name: "Virtual DOM",
-//           },
-//         ],
-//       },
-//       {
-//         name: "Advanced Concepts of React JS",
-//         children: [
-//           {
-//             name: "Hooks",
-//           },
-//           {
-//             name: "Context API",
-//           },
-//           {
-//             name: "Redux",
-//           },
-//           {
-//             name: "React Router",
-//           },
-//           {
-//             name: "Optimization Techniques",
-//           },
-//         ],
-//       },
-//       {
-//         name: "Building Real-World Applications with React JS",
-//         children: [
-//           {
-//             name: "Creating a Simple To-Do List App",
-//           },
-//           {
-//             name: "Building a Dynamic Blog with React JS",
-//           },
-//           {
-//             name: "Developing an E-commerce Website with React JS",
-//           },
-//           {
-//             name: "Best Practices for React JS Development",
-//           },
-//         ],
-//       },
-//       {
-//         name: "Advanced Topics in React JS",
-//         children: [
-//           {
-//             name: "React Native",
-//           },
-//           {
-//             name: "Server-Side Rendering (SSR)",
-//           },
-//           {
-//             name: "GraphQL",
-//           },
-//           {
-//             name: "TypeScript with React JS",
-//           },
-//           {
-//             name: "Testing with React JS",
-//           },
-//         ],
-//       },
-//     ],
-//   },
-// ];
-
-// const sampleData2 = [
-//   {
-//     name: "React JS",
-//     children: [
-//       {
-//         name: "Introduction to React JS",
-//         children: [
-//           {
-//             name: "What is React JS?",
-//           },
-//           {
-//             name: "Benefits of Using React JS",
-//           },
-//           {
-//             name: "Prerequisites for Learning React JS",
-//           },
-//           {
-//             name: "Setting up Your Development Environment",
-//           },
-//         ],
-//       },
-//       {
-//         name: "Core Concepts of React JS",
-//         children: [
-//           {
-//             name: "Components",
-//           },
-//           {
-//             name: "Props",
-//           },
-//           {
-//             name: "State",
-//           },
-//           {
-//             name: "Lifecycle Methods",
-//           },
-//           {
-//             name: "Virtual DOM",
-//           },
-//         ],
-//       },
-//       {
-//         name: "Advanced Concepts of React JS",
-//         children: [
-//           {
-//             name: "Hooks",
-//           },
-//           {
-//             name: "Context API",
-//           },
-//           {
-//             name: "Redux",
-//           },
-//           {
-//             name: "React Router",
-//           },
-//           {
-//             name: "Optimization Techniques",
-//           },
-//         ],
-//       },
-//       {
-//         name: "Building Real-World Applications with React JS",
-//         children: [
-//           {
-//             name: "Creating a Simple To-Do List App",
-//           },
-//           {
-//             name: "Building a Dynamic Blog with React JS",
-//           },
-//           {
-//             name: "Developing an E-commerce Website with React JS",
-//           },
-//           {
-//             name: "Best Practices for React JS Development",
-//           },
-//         ],
-//       },
-//       {
-//         name: "Advanced Topics in React JS",
-//         children: [
-//           {
-//             name: "React Native",
-//           },
-//           {
-//             name: "Server-Side Rendering (SSR)",
-//           },
-//           {
-//             name: "GraphQL",
-//           },
-//           {
-//             name: "TypeScript with React JS",
-//           },
-//           {
-//             name: "Testing with React JS",
-//           },
-//         ],
-//       },
-//     ],
-//   },
-// ];
+import { Button, notification, Skeleton } from "antd";
+import "./roadmap.css";
+import IntroSection from "../../components/templates/intro-section";
+import { SaveOutlined } from "@ant-design/icons";
+import TreeSkeleton from "../../components/skeleton/tree-skeleton";
 
 const RoadMap = () => {
   const [myTreeData, setMyTreeData] = useState([]);
   const [selectedNode, setSelectedNode] = useState(null);
   const [interest, setInterest] = useState("");
   const { user } = useAuth();
+  const [showHeading, setShowHeading] = useState(true);
+  const [loading, setLoading] = useState(false); // New loading state
 
-  // const [sampleTree, SetSampleTree] = useState(sampleTreeData);
-
-  // Function to append children to the respective node
   const appendChildren = (data, nodeName, children) => {
     return data.map((item) => {
       if (item.name === nodeName) {
@@ -245,38 +44,48 @@ const RoadMap = () => {
     setSelectedNode(nodeDatum);
 
     if (nodeDatum.name && !nodeDatum.children) {
-      // Construct the interest based on the clicked node
       const newInterest = interest
         ? `${interest}, ${nodeDatum.name}`
         : nodeDatum.name;
 
-      // Fetch additional data based on the new interest
-      // const newData = await fetchRoadMap(newInterest);
+      setLoading(true); // Set loading state when fetching data
       const newData = await generateRoadmap(newInterest);
+      setLoading(false); // Reset loading state after fetching data
 
-      // Update the tree structure by adding new data as children of the clicked node
       if (newData.length) {
         const updatedData = appendChildren(myTreeData, nodeDatum.name, newData);
-        // Update the state to re-render the tree with the expanded node
         setMyTreeData(updatedData);
       }
     }
   };
 
   const getRoadmap = async () => {
+    setLoading(true); // Set loading state when fetching data
     const roadmap = await getUserRoadmap(user.email);
-    console.log(roadmap);
+    setLoading(false); // Reset loading state after fetching data
+
     if (roadmap && roadmap.data) {
       setMyTreeData(JSON.parse(roadmap.data) || []);
     }
   };
 
   useEffect(() => {
+    if (myTreeData.length !== 0) {
+      setShowHeading(false);
+    } else {
+      setShowHeading(true);
+    }
+  }, [myTreeData]);
+
+  useEffect(() => {
     getRoadmap();
   }, [user]);
 
   const handleRoadmap = async (interest: string) => {
+    setLoading(true); // Set loading state when fetching data
     const data = await generateRoadmap(interest);
+    setLoading(false); // Reset loading state after fetching data
+
     setMyTreeData(data);
   };
 
@@ -287,35 +96,49 @@ const RoadMap = () => {
       duration: 5,
     });
   };
+
   return (
     <div>
-      <div>
-        <input
-          type="text"
-          placeholder="enter your interest"
-          onChange={(e) => setInterest(e.target.value)}
-        />
-        <input type="submit" onClick={() => handleRoadmap(interest)} />
-      </div>
+      <IntroSection
+        title="The Roadmap"
+        description="Our vision for the future. The features we're working on. The progress we've made."
+        placeholder="enter your interest"
+        value={interest}
+        onChange={setInterest}
+        onSubmit={() => handleRoadmap(interest)}
+        showHeading={showHeading}
+      />
       <div className="App">
-        <h1>org Chart</h1>
-        <button onClick={addRoadmap}>save your roadmap</button>
-        <div id="treeWrapper" style={{ width: "100%", height: "100vh" }}>
-          {myTreeData.length && (
-            <Tree
-              data={myTreeData}
-              orientation="vertical"
-              nodeSvgShape={{ shape: "circle", shapeProps: { r: 10 } }}
-              pathFunc="step"
-              // separation={{ siblings: 50, nonSiblings: 50 }}
-              nodeSize={{ x: 500, y: 300 }}
-              translate={{ x: 350, y: 100 }}
-              allowForeignObjects={true}
-              initialDepth={0.02}
-              renderCustomNodeElement={(props) =>
-                renderNodeElement(props, selectedNode, handleNodeClick)
-              }
-            />
+        <div className="flex justify-start mb-4 ml-3">
+          <Button
+            type="primary"
+            icon={<SaveOutlined />}
+            onClick={addRoadmap}
+            className="bg-blue-500 hover:bg-blue-700 text-white"
+          >
+            Save Roadmap
+          </Button>
+        </div>
+        <div id="treeWrapper" style={{ width: "95%", height: "100vh" }}>
+          {loading ? ( // Render loading skeleton when loading
+            // <Skeleton active />
+            <TreeSkeleton />
+          ) : (
+            myTreeData.length > 0 && ( // Render tree if data is available
+              <Tree
+                data={myTreeData}
+                orientation="vertical"
+                nodeSvgShape={{ shape: "circle", shapeProps: { r: 10 } }}
+                pathFunc="step"
+                nodeSize={{ x: 500, y: 300 }}
+                translate={{ x: 700, y: 100 }}
+                allowForeignObjects={true}
+                initialDepth={0.02}
+                renderCustomNodeElement={(props) =>
+                  renderNodeElement(props, selectedNode, handleNodeClick)
+                }
+              />
+            )
           )}
         </div>
       </div>

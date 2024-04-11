@@ -1,0 +1,31 @@
+.node__circle {
+  fill: #62008e; /* Change the fill color as desired */
+  stroke: #62008e; /* Change the stroke color as desired */
+  stroke-width: 2px; /* Adjust the stroke width as needed */
+  filter: drop-shadow(0px 0px 8px #62008e); /* Apply a drop shadow effect */
+}
+
+.node__annotation {
+  font-family: sans-serif; /* Change the font family as desired */
+  font-size: 14px; /* Adjust the font size as needed */
+}
+
+.node__link {
+  stroke: #62008e; /* Change the stroke color as desired */
+  stroke-width: 2px; /* Adjust the stroke width as needed */
+  filter: drop-shadow(0px 0px 8px #62008e); /* Apply a drop shadow effect */
+}
+
+.node__root > circle {
+  fill: red;
+}
+
+.node__branch > circle {
+  fill: yellow;
+}
+
+.node__leaf > circle {
+  fill: green;
+  /* Let's also make the radius of leaf nodes larger */
+  r: 40;
+}

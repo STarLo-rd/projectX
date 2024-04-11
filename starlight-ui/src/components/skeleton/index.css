@@ -1,0 +1,40 @@
+.tree-skeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.node {
+  width: 40px; /* Made larger */
+  height: 40px; /* Made larger */
+  border-radius: 50%;
+  background-color: #ddd;
+  margin-bottom: 20px; /* Increased spacing */
+  animation: pulse 1s infinite;
+}
+
+.branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 40px; /* Increased margin */
+}
+
+.leaf {
+  width: 10px; /* Leaf width */
+  height: 20px; /* Leaf height */
+  background-color: green; /* Leaf color */
+  margin-bottom: 10px; /* Leaf spacing */
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}

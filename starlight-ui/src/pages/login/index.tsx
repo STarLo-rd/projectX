@@ -35,65 +35,86 @@ const Login = () => {
   };
 
   return (
-    <Form
-      name="normal_login"
-      className="sku-layout-unauth_form"
-      initialValues={{
-        remember: true,
-      }}
-      onFinish={onFinish}
-    >
-      {isDarkMode === true ? (
-        <img src={currentImage} alt="Dark-Logo" />
-      ) : (
-        <img src={currentImage} alt="Light-Logo" />
-      )}
-      <p>Welcome to projectX</p>
-      <Form.Item
-        name="email"
-        rules={[
-          {
-            required: true,
-            message: "Please input your Email!",
-          },
-        ]}
-      >
-        <Input prefix={<UserOutlined />} placeholder="Email" />
-      </Form.Item>
+    <div className="flex flex-col min-h-screen">
+      <header className="py-10 lg:py-14 xl:py-16">
+        <div className="mx-auto px-4 flex flex-col items-center space-y-2">
+          {isDarkMode === true ? (
+            <img className="h-30 w-30" src={currentImage} alt="Dark-Logo" />
+          ) : (
+            <img className="h-30 w-30" src={currentImage} alt="Light-Logo" />
+          )}
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+            The next generation of learning
+          </p>
+        </div>
+      </header>
+      <main className="flex items-center justify-center py-6 sm:py-12">
+        <div className="space-y-6 w-full max-w-sm px-4">
+          <div className="space-y-2 text-center">
+            <h1 className="text-3xl font-bold">Login</h1>
+            <p className="text-gray-500 dark:text-gray-400">
+              Enter your email below to login to your account
+            </p>
+          </div>
+          <Form
+            name="normal_login"
+            initialValues={{
+              remember: true,
+            }}
+            onFinish={onFinish}
+          >
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Form.Item
+                  name="email"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your Email!",
+                    },
+                  ]}
+                >
+                  <Input prefix={<UserOutlined />} placeholder="Email" />
+                </Form.Item>
+              </div>
 
-      <Form.Item
-        name="password"
-        rules={[
-          {
-            required: true,
-            message: "Please input your Password!",
-          },
-        ]}
-      >
-        <Input
-          prefix={<LockOutlined />}
-          type="password"
-          placeholder="Password"
-        />
-      </Form.Item>
+              <Form.Item
+                name="password"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your Password!",
+                  },
+                ]}
+              >
+                <Input
+                  prefix={<LockOutlined />}
+                  type="password"
+                  placeholder="Password"
+                />
+              </Form.Item>
 
-      <Form.Item>
-        <Link style={{ float: "right" }} to="/forgot">
-          Forgot password
-        </Link>
-      </Form.Item>
+              <Form.Item>
+                <Link style={{ float: "right" }} to="/forgot">
+                  Forgot password
+                </Link>
+              </Form.Item>
 
-      <Form.Item>
-        <Button
-          type="primary"
-          htmlType="submit"
-          className="sku-layout-unauth_form-button"
-          loading={loadings}
-        >
-          Log in
-        </Button>
-      </Form.Item>
-    </Form>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="w-full h-10 bg-black"
+                  loading={loadings}
+                >
+                  Log in
+                </Button>
+              </Form.Item>
+            </div>
+          </Form>
+        </div>
+      </main>
+    </div>
   );
 };
 

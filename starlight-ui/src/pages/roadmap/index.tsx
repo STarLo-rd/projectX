@@ -5,7 +5,6 @@ import RoadMap from "./generate-roadmap";
 const Roadmaps: React.FC = () => {
   return (
     <div>
-      <h1>Your Roadmaps</h1>
       <div>
         <RoadMap />
       </div>

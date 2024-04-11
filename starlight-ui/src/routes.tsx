@@ -3,8 +3,6 @@ import ExplainTopic from "./pages/explain-topic";
 import Login from "./pages/login";
 import News from "./pages/news";
 import Roadmaps from "./pages/roadmap";
-import ReactFlowPage from "./pages/roadmap";
-import RoadMap from "./pages/roadmap";
 import UserProfileForm from "./pages/user-profile/userprofile-form";
 
 export const authRoutes = [

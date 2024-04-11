@@ -3,7 +3,7 @@ import { DefaultParams } from "../types";
 import payload from "payload";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import axios from "axios";
-import { HfInference } from '@huggingface/inference'
+import { HfInference } from "@huggingface/inference";
 const genAI = new GoogleGenerativeAI("AIzaSyBWABGD2ryXU63Y7qHhKEEC1SMaaIlaBIM"); // Replace "YOUR_API_KEY" with your actual API key
 
 // Implement your logic for task decomposition, context framing, analogy finding, and example finding
@@ -140,7 +140,10 @@ const callGeminiAIModel = async (topic) => {
   try {
     const prompt = await preparePrompt(topic);
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    const result = await model.generateContent(prompt);
+    const result = await model.generateContent(
+      `Genearate the result form of detailed essay as markdown file and it must needs to have good formatting requires for` +
+      prompt
+    );
     const response = await result.response;
     const text = await response.text();
     return text;
@@ -174,34 +177,16 @@ const summarizeText: RequestHandler<DefaultParams, any, any> = async (
 ) => {
   try {
     const { data } = req.body;
-    const hf = new HfInference("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")
+    const hf = new HfInference("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");
     const result = await hf.summarization({
-      model: 'facebook/bart-large-cnn',
+      model: "facebook/bart-large-cnn",
       inputs: data,
       parameters: {
-        max_length: 100
-      }
-    })
+        max_length: 100,
+      },
+    });
 
-    res.send(result)
-    // const inferenceSession = await InferenceSession.create({
-    //   providers: ["CPUProvider"],
-    //   tensorPath:
-    //     "https://huggingface.co/facebook/bart-large-cnn/resolve/main/pytorch_model.bin",
-    // });
-
-
-    // const tokenizedInput = await inferenceSession.encode(data);
-    // console.log("tokenizedInput", tokenizedInput);
-    // // Generate the summary
-    // const summary = await inferenceSession.decode(
-    //   await inferenceSession.run("summary", [tokenizedInput], {
-    //     max_length: 130,
-    //     min_length: 30,
-    //   })[0]
-    // );
-
-    // return summary;
+    res.send(result);
   } catch (err) {
     console.error("Error in explainTopic:", err.message);
     payload.logger.error(err.message);
@@ -210,7 +195,6 @@ const summarizeText: RequestHandler<DefaultParams, any, any> = async (
   }
 };
 
-
 const geneateQuestions: RequestHandler<DefaultParams, any, any> = async (
   req,
   res,
@@ -218,11 +202,11 @@ const geneateQuestions: RequestHandler<DefaultParams, any, any> = async (
 ) => {
   try {
     const { data } = req.body;
-    const hf = new HfInference("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")
+    const hf = new HfInference("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");
 
     // Generate questions from the text
     const questionsResponse = await hf.textGeneration({
-      model: 'ramsrigouthamg/t5_squad_v1',
+      model: "ramsrigouthamg/t5_squad_v1",
       inputs: data,
       parameters: {
         max_length: 128,
@@ -234,12 +218,14 @@ const geneateQuestions: RequestHandler<DefaultParams, any, any> = async (
       },
     });
 
-    const generatedQuestions = questionsResponse.generated_text.replace('question: ', '');
-
+    const generatedQuestions = questionsResponse.generated_text.replace(
+      "question: ",
+      ""
+    );
 
     // Get the answer to the selected question
     const answer = await hf.questionAnswering({
-      model: 'deepset/roberta-base-squad2',
+      model: "deepset/roberta-base-squad2",
       inputs: {
         question: generatedQuestions,
         context: data,
@@ -264,7 +250,6 @@ const geneateQuestions: RequestHandler<DefaultParams, any, any> = async (
     // console.log("Generated Choices:", choices);
 
     res.json({ question: generatedQuestions, answer });
-
   } catch (err) {
     console.error("Error in explainTopic:", err.message);
     payload.logger.error(err.message);
