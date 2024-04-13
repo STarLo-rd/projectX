@@ -39,9 +39,14 @@ const Login = () => {
       <header className="py-10 lg:py-14 xl:py-16">
         <div className="mx-auto px-4 flex flex-col items-center space-y-2">
           {isDarkMode === true ? (
-            <img className="h-30 w-30" src={currentImage} alt="Dark-Logo" />
+            <img className="h-20 w-20" src={currentImage} alt="Dark-Logo" />
           ) : (
-            <img className="h-30 w-30" src={currentImage} alt="Light-Logo" />
+            <img
+              // className="h-25 w-25 max-h-24 object-contain"
+              style={{ maxHeight: 250, maxWidth: 250, objectFit: "contain" }}
+              src={currentImage}
+              alt="Light-Logo"
+            />
           )}
           <p className="text-center text-sm text-gray-500 dark:text-gray-400">
             The next generation of learning

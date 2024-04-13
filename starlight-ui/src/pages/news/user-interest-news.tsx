@@ -1,9 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Layout, Input, Card, Typography, Space, Spin } from "antd";
+import {
+  Layout,
+  Input,
+  Card,
+  Typography,
+  Space,
+  Spin,
+  Form,
+  Skeleton,
+} from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import ListNews from "./list-news";
+const { Search } = Input;
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -23,662 +33,69 @@ const UserInterestNews: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [userInterest, setUserInterest] = useState<string>("web development");
   const [loading, setLoading] = useState<boolean>(false);
+  const [searchLoading, setSearchLoading] = useState<boolean>(true);
+
+  const fetchNews = async (query: string) => {
+    setLoading(true);
+    try {
+      setLoading(true);
+      console.log(query);
+      // const response = await axios.get<{ results: Article[] }>(
+      //   "https://newsdata.io/api/1/news",
+      //   {
+      //     params: {
+      //       apiKey: "pub_41485a751a20da677765a206b5537b348292b",
+      //       q: query,
+      //       language: "en",
+      //     },
+      //   }
+      // );
+      // console.log(response.data.results);
+      // setArticles(response.data.results);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching news:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchNews = async () => {
-      setLoading(true);
-      try {
-        // const response = await axios.get<{ results: Article[] }>(
-        //   "https://newsdata.io/api/1/news",
-        //   {
-        //     params: {
-        //       apiKey: "pub_41485a751a20da677765a206b5537b348292b",
-        //       q: userInterest,
-        //       language: "en",
-        //     },
-        //   }
-        // );
-        // console.log(response.data.results)
-        // setArticles(response.data.results);
-        setArticles([
-          {
-            article_id: "4d0e61057823190b5140dfa1b473041d",
-            title:
-              "Pyridine Market Size Worth $1274.2 Million by 2033: The Brainy Insights",
-            link: "https://www.globenewswire.com/fr/news-release/2024/04/10/2861056/0/en/Pyridine-Market-Size-Worth-1274-2-Million-by-2033-The-Brainy-Insights.html",
-            keywords: null,
-            creator: null,
-            video_url: null,
-            description:
-              "Pyridine market size from USD 732.0 million in 2023 to USD 1274.2 million, growing at a CAGR of 5.7% in 10 years. The increasing demand for pyridine in pharmaceuticals industry drive the market's growth. Pyridine market size from USD 732.0 million in 2023 to USD 1274.2 million, growing at a CAGR of 5.7% in 10 years. The increasing demand for pyridine in pharmaceuticals industry drive the market's growth.",
-            content: "ONLY AVAILABLE IN PAID PLANS",
-            pubDate: "2024-04-10 18:00:00",
-            image_url: null,
-            source_id: "globenewswire_fr",
-            source_priority: 21323,
-            source_url: "https://www.globenewswire.com/fr",
-            source_icon:
-              "https://i.bytvi.com/domain_icons/globenewswire_fr.jpg",
-            language: "english",
-            country: ["france"],
-            category: ["science"],
-            ai_tag: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment_stats:
-              "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            ai_region: "ONLY AVAILABLE IN CORPORATE PLANS",
-          },
-          {
-            article_id: "ed113cae9f794bd9f0041e21763aa90d",
-            title:
-              "From Rural Web Developer to Globally Renowned eCommerce Coach: The Story of Jeffrey Schipper",
-            link: "https://www.openpr.com/news/3459153/from-rural-web-developer-to-globally-renowned-ecommerce-coach",
-            keywords: ["business, economy, finances, banking & insurance"],
-            creator: ["Getnews"],
-            video_url: null,
-            description:
-              "Jeffrey Schipper is a co-founder and co-owner of the premier business coaching platform Ecom Education specializing in helping students kickstart their business adventures. Jeffrey is internationally recognized among the most successful webshop coaches across all compass points. Image: https://www.getnews.info/uploads/9c81ea48b8a29abac10b6918fff10d65.png Jeffrey Schipper's [http://www.ecom-education.nl]",
-            content: "ONLY AVAILABLE IN PAID PLANS",
-            pubDate: "2024-04-10 17:38:04",
-            image_url: "https://cdn.openpr.com/X/4/X410666724_k.jpg",
-            source_id: "openpr",
-            source_priority: 161245,
-            source_url: "https://www.openpr.com",
-            source_icon: null,
-            language: "english",
-            country: ["germany"],
-            category: ["business"],
-            ai_tag: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment_stats:
-              "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            ai_region: "ONLY AVAILABLE IN CORPORATE PLANS",
-          },
-          {
-            article_id: "0a1c6e0f441f60625b7ed31a2a38c973",
-            title:
-              "TCG World Proudly Announces Partnership With STYNGR & Downtown",
-            link: "https://zephyrnet.com/tcg-world-proudly-announces-partnership-with-styngr-downtown/",
-            keywords: [
-              "blockchain",
-              ":has",
-              ":not",
-              "100",
-              "145",
-              "2024",
-              "aaa",
-              "about",
-              "access",
-              "accounting",
-              "acquire",
-              "activations",
-              "add",
-              "adding",
-              "adds",
-              "alex",
-              "all",
-              "allencompassing",
-              "also",
-              "amplified",
-              "analytics",
-              "and",
-              "angeles",
-              "announced",
-              "announces",
-              "any",
-              "april",
-              "are",
-              "artist",
-              "assets",
-              "been",
-              "being",
-              "belonging",
-              "benefits",
-              "best",
-              "biotech",
-              "blockchain",
-              "blockoffsets",
-              "bridges",
-              "building",
-              "built",
-              "businesses",
-              "but",
-              "cacciotti",
-              "carbon",
-              "cases",
-              "catalog",
-              "ceo",
-              "change",
-              "cleantech",
-              "clients",
-              "clinical",
-              "collectible",
-              "collectibles",
-              "collection",
-              "community",
-              "company",
-              "complements",
-              "contacts",
-              "content",
-              "coo",
-              "costs",
-              "couldn",
-              "countries",
-              "crafted",
-              "create",
-              "creating",
-              "creation",
-              "creators",
-              "curated",
-              "data",
-              "david",
-              "decentralized",
-              "delivery",
-              "demanding",
-              "depth",
-              "details",
-              "developer",
-              "developers",
-              "development",
-              "digital",
-              "dimension",
-              "discord",
-              "distribution",
-              "diverse",
-              "dominant",
-              "downtown",
-              "downtownmusiccom",
-              "drops",
-              "ease",
-              "economic",
-              "ecordell",
-              "ecosystem",
-              "efficient",
-              "emotes",
-              "empower",
-              "enable",
-              "enables",
-              "enabling",
-              "energy",
-              "energyefficient",
-              "enriches",
-              "entertaining",
-              "environment",
-              "environmental",
-              "environments",
-              "esports",
-              "establish",
-              "estate",
-              "evans",
-              "evp",
-              "exciting",
-              "exclusive",
-              "exclusives",
-              "executing",
-              "experience",
-              "exploration",
-              "explore",
-              "facebook",
-              "facets",
-              "far",
-              "fast",
-              "fastgrowing",
-              "feature",
-              "features",
-              "featuring",
-              "finance",
-              "financing",
-              "for",
-              "forces",
-              "forefront",
-              "forward",
-              "foundation",
-              "from",
-              "frontier",
-              "further",
-              "game",
-              "gaming",
-              "generative",
-              "genres",
-              "get",
-              "global",
-              "globally",
-              "goods",
-              "graphics",
-              "groundbreaking",
-              "here",
-              "history",
-              "holdings",
-              "iconic",
-              "immersive",
-              "impacting",
-              "including",
-              "incorporates",
-              "industry",
-              "ingame",
-              "innovation",
-              "innovative",
-              "instagram",
-              "integrating",
-              "integration",
-              "intelligence",
-              "interactive",
-              "into",
-              "inworld",
-              "its",
-              "join",
-              "joining",
-              "justin",
-              "knowledge",
-              "knowledgeable",
-              "landscape",
-              "languages",
-              "launch",
-              "launching",
-              "layer",
-              "leading",
-              "lean",
-              "learn",
-              "led",
-              "ledger",
-              "licensed",
-              "licensing",
-              "like",
-              "liquidity",
-              "loredana",
-              "los",
-              "low",
-              "major",
-              "management",
-              "marketing",
-              "media",
-              "medium",
-              "melodic",
-              "merging",
-              "metaverse",
-              "meticulously",
-              "million",
-              "modernizing",
-              "more",
-              "most",
-              "move",
-              "music",
-              "musicdriven",
-              "new",
-              "now",
-              "offering",
-              "offerings",
-              "offers",
-              "offset",
-              "one",
-              "online",
-              "only",
-              "open",
-              "opensource",
-              "our",
-              "over",
-              "own",
-              "ownership",
-              "part",
-              "partnership",
-              "payment",
-              "payments",
-              "pioneers",
-              "platform",
-              "plato",
-              "platoaistream",
-              "platodatanetwork",
-              "platoesg",
-              "platohealth",
-              "play",
-              "player",
-              "players",
-              "powered",
-              "powerhouse",
-              "premier",
-              "press",
-              "projects",
-              "proprietary",
-              "proud",
-              "proudly",
-              "provides",
-              "providing",
-              "public",
-              "publishing",
-              "pulse",
-              "real",
-              "realm",
-              "redefine",
-              "releases",
-              "reliable",
-              "representing",
-              "revenue",
-              "revolutionary",
-              "revolutionize",
-              "rhythm",
-              "rich",
-              "ripplecom",
-              "royalty",
-              "said",
-              "scale",
-              "sdks",
-              "see",
-              "sense",
-              "seo",
-              "service",
-              "services",
-              "set",
-              "settlement",
-              "shops",
-              "simplify",
-              "social",
-              "solar",
-              "sonic",
-              "soon",
-              "soundscape",
-              "source",
-              "sponsors",
-              "stations",
-              "strong",
-              "styngr",
-              "styngrcom",
-              "suited",
-              "support",
-              "system",
-              "tarrand",
-              "tcg",
-              "tcgworld",
-              "tech",
-              "technology",
-              "telegram",
-              "ten",
-              "than",
-              "that",
-              "the",
-              "this",
-              "today",
-              "tokenization",
-              "tokenized",
-              "tracks",
-              "traditional",
-              "transaction",
-              "trials",
-              "twitch",
-              "twitter",
-              "unique",
-              "universe",
-              "unveil",
-              "use",
-              "user",
-              "variety",
-              "vertical",
-              "virtual",
-              "visit",
-              "was",
-              "waste",
-              "way",
-              "web",
-              "web3",
-              "website",
-              "well",
-              "wide",
-              "will",
-              "with",
-              "without",
-              "world",
-              "worlds",
-              "xrp",
-              "xrpl",
-              "xrplorg",
-              "years",
-              "yourself",
-              "youtube",
-            ],
-            creator: ["Republished By Plato"],
-            video_url: null,
-            description:
-              "In partnership with STYNGR, XRP Ledger, and the iconic Downtown is set to launch music digital collectibles in Q2 2024 featuring artist exclusives, in-world activations, and more LOS ANGELES, April 10, 2024 – The virtual realm will soon pulse to the rhythm of music. TCG World, the fast-growing and immersive Web3 online open world metaverse, […]",
-            content: "ONLY AVAILABLE IN PAID PLANS",
-            pubDate: "2024-04-10 17:36:44",
-            image_url:
-              "https://zephyrnet.com/wp-content/uploads/2024/04/WhatsApp-Image-2024-04-10-at-11.13.07-AM.jpeg",
-            source_id: "zephyrnet",
-            source_priority: 3670004,
-            source_url: "https://zephyrnet.com",
-            source_icon: "https://i.bytvi.com/domain_icons/zephyrnet.png",
-            language: "english",
-            country: ["united states of america"],
-            category: ["top"],
-            ai_tag: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment_stats:
-              "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            ai_region: "ONLY AVAILABLE IN CORPORATE PLANS",
-          },
-          {
-            article_id: "cf8a1faf10ac2dcb7ff9a6b996fc011e",
-            title: "What to know about the hottest trial involving Amanda Knox",
-            link: "https://en.news4social.com/world/what-to-know-about-the-hottest-trial-involving-amanda-knox/",
-            keywords: [
-              "world",
-              "109092928",
-              "amanda",
-              "article",
-              "courts",
-              "crime",
-              "general news",
-              "homicide",
-              "hottest",
-              "involving",
-              "knox",
-              "legal proceedings",
-              "trial",
-              "world news",
-            ],
-            creator: ["World News"],
-            video_url: null,
-            description:
-              "What to know about the most recent demo involving Amanda Knox FLORENCE, Italy — Amanda Knox is again defending herself in an Italian courtroom in a slander circumstance that has the prospective to remove the last legal stain versus her, adhering to her exoneration nine years ago in the 2007 murder of her roommate, Meredith […]",
-            content: "ONLY AVAILABLE IN PAID PLANS",
-            pubDate: "2024-04-10 17:34:30",
-            image_url:
-              "https://i.abcnewsfe.com/a/a1deea5a-ef49-4126-9498-eadaecd96dfc/wirestory_9126ed967b76ba57221e86eafcdc1932_16x9.jpg?w=1600",
-            source_id: "news4social",
-            source_priority: 10742357,
-            source_url: "https://en.news4social.com",
-            source_icon: "https://i.bytvi.com/domain_icons/news4social.png",
-            language: "english",
-            country: ["india"],
-            category: ["top"],
-            ai_tag: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment_stats:
-              "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            ai_region: "ONLY AVAILABLE IN CORPORATE PLANS",
-          },
-          {
-            article_id: "da3bf07486bbf3117f6c4954f4d192ed",
-            title:
-              "Jeffrey Schipper's E-Commerce Mastery: Revolutionizing Online Business with Ecom Education",
-            link: "https://www.openpr.com/news/3459149/jeffrey-schipper-s-e-commerce-mastery-revolutionizing",
-            keywords: ["business, economy, finances, banking & insurance"],
-            creator: ["Getnews"],
-            video_url: null,
-            description:
-              "Jeffrey Schipper and Maik Biemans have transformed the e-commerce landscape through their venture, Ecom Education. Overcoming personal adversities, Schipper's journey from adversity to 10 million turnovers spotlights what can be accomplished in e-commerce and drop-shipping. Their program has equipped over",
-            content: "ONLY AVAILABLE IN PAID PLANS",
-            pubDate: "2024-04-10 17:34:05",
-            image_url: "https://cdn.openpr.com/X/4/X410975483_k.jpg",
-            source_id: "openpr",
-            source_priority: 161245,
-            source_url: "https://www.openpr.com",
-            source_icon: null,
-            language: "english",
-            country: ["germany"],
-            category: ["business"],
-            ai_tag: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment_stats:
-              "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            ai_region: "ONLY AVAILABLE IN CORPORATE PLANS",
-          },
-          {
-            article_id: "0a5ce6713f3b49ab6254295d0217d121",
-            title: "Aussie curiosity about AI tech reaches all-time high",
-            link: "https://thewest.com.au/technology/aussie-curiosity-about-ai-tech-reaches-all-time-high-c-14269752",
-            keywords: null,
-            creator: ["Jennifer Dudley-Nicholson"],
-            video_url: null,
-            description:
-              "Artificial intelligence has become a hot topic for web searches in Australia, according to Google, causing a record-breaking number of web searches.",
-            content: "ONLY AVAILABLE IN PAID PLANS",
-            pubDate: "2024-04-10 17:32:49",
-            image_url:
-              "https://images.thewest.com.au/publication/C-14269752/a1836897a3eb85795e4bd4901bb7873069548750-16x9-x0y0w1280h720.jpg",
-            source_id: "thewest",
-            source_priority: 106740,
-            source_url: "https://thewest.com.au",
-            source_icon: "https://i.bytvi.com/domain_icons/thewest.png",
-            language: "english",
-            country: ["australia"],
-            category: ["technology"],
-            ai_tag: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment_stats:
-              "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            ai_region: "ONLY AVAILABLE IN CORPORATE PLANS",
-          },
-          {
-            article_id: "09ca9e27154297ed4a712287b958b84c",
-            title: "Aussie curiosity about AI tech reaches all-time high",
-            link: "https://www.margaretrivermail.com.au/story/8587604/aussie-curiosity-about-ai-tech-reaches-all-time-high/?src=rss",
-            keywords: null,
-            creator: ["Jennifer Dudley-Nicholson"],
-            video_url: null,
-            description:
-              "Artificial intelligence has become a hot topic for web searches in Australia, according to Google, causing a record-breaking number of web searches.",
-            content: "ONLY AVAILABLE IN PAID PLANS",
-            pubDate: "2024-04-10 17:30:35",
-            image_url:
-              "https://www.margaretrivermail.com.au/images/transform/v1/crop/frm/silverstone-feed-data/b1db7195-f359-4880-89b2-bc67fa645173.jpg/r0_75_800_526_w600_h338_fmax.jpg",
-            source_id: "margaretrivermail",
-            source_priority: 4547502,
-            source_url: "https://www.margaretrivermail.com.au",
-            source_icon:
-              "https://i.bytvi.com/domain_icons/margaretrivermail.png",
-            language: "english",
-            country: ["australia"],
-            category: ["top"],
-            ai_tag: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment_stats:
-              "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            ai_region: "ONLY AVAILABLE IN CORPORATE PLANS",
-          },
-          {
-            article_id: "ca4c5894359ce2588499cd93ee8fae89",
-            title: "Over 100 teams to be deployed for Dharavi survey",
-            link: "https://timesofindia.indiatimes.com/city/mumbai/over-100-teams-to-be-deployed-for-dharavi-survey/articleshow/109203706.cms",
-            keywords: null,
-            creator: ["Manthan Mehta"],
-            video_url: null,
-            description: null,
-            content: "ONLY AVAILABLE IN PAID PLANS",
-            pubDate: "2024-04-10 17:23:08",
-            image_url:
-              "https://static.toiimg.com/photo/msid-109203741,imgsize-58790.cms",
-            source_id: "toi",
-            source_priority: 391,
-            source_url: "https://timesofindia.indiatimes.com",
-            source_icon: "https://i.bytvi.com/domain_icons/toi.png",
-            language: "english",
-            country: ["india"],
-            category: ["top"],
-            ai_tag: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment_stats:
-              "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            ai_region: "ONLY AVAILABLE IN CORPORATE PLANS",
-          },
-          {
-            article_id: "53d948ba511e51cb161485bf89952699",
-            title: "Best Laser Cutters and Engravers of 2024 - CNET",
-            link: "https://www.cnet.com/tech/computing/the-best-laser-cutters-and-engravers/#ftag=CAD590a51e",
-            keywords: null,
-            creator: ["James Bricknell"],
-            video_url: null,
-            description:
-              "Make amazing things with the latest laser cutters and engravers.",
-            content: "ONLY AVAILABLE IN PAID PLANS",
-            pubDate: "2024-04-10 17:18:00",
-            image_url:
-              "https://www.cnet.com/a/img/resize/ef52b86d531b32800c0e26aef3d4c8e968a88dcd/hub/2023/10/05/f3212b93-94ec-4190-a98c-07e15686dddf/best-laser-cutter-promo.jpg?auto=webp&width=300",
-            source_id: "cnet",
-            source_priority: 155,
-            source_url: "https://www.cnet.com",
-            source_icon: "https://i.bytvi.com/domain_icons/cnet.png",
-            language: "english",
-            country: ["united states of america"],
-            category: ["top"],
-            ai_tag: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment_stats:
-              "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            ai_region: "ONLY AVAILABLE IN CORPORATE PLANS",
-          },
-          {
-            article_id: "6b2f6f1d0d5db84fcde1eab703d43823",
-            title: "Best Laser Cutters and Engravers of 2024 - CNET",
-            link: "https://www.cnet.com/tech/computing/the-best-laser-cutters-and-engravers/#ftag=CAD5457c2c",
-            keywords: null,
-            creator: ["James Bricknell"],
-            video_url: null,
-            description:
-              "Make amazing things with the latest laser cutters and engravers.",
-            content: "ONLY AVAILABLE IN PAID PLANS",
-            pubDate: "2024-04-10 17:18:00",
-            image_url:
-              "https://www.cnet.com/a/img/resize/ef52b86d531b32800c0e26aef3d4c8e968a88dcd/hub/2023/10/05/f3212b93-94ec-4190-a98c-07e15686dddf/best-laser-cutter-promo.jpg?auto=webp&width=300",
-            source_id: "cnet",
-            source_priority: 155,
-            source_url: "https://www.cnet.com",
-            source_icon: "https://i.bytvi.com/domain_icons/cnet.png",
-            language: "english",
-            country: ["united states of america"],
-            category: ["top"],
-            ai_tag: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment: "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            sentiment_stats:
-              "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
-            ai_region: "ONLY AVAILABLE IN CORPORATE PLANS",
-          },
-        ]);
-      } catch (error) {
-        console.error("Error fetching news:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchNews("top news");
+  }, []);
 
-    fetchNews();
-  }, [userInterest]);
-
-  const handleInterestChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserInterest(event.target.value);
+  const handleInterestChange = (value: string) => {
+    setUserInterest(value);
+    fetchNews(value);
   };
 
   return (
     <>
       <section>
+        <Form name="userInterestForm" layout="inline" className="mb-4">
+          <Form.Item className="mr-2">
+            <Search
+              placeholder="Enter your interest"
+              onSearch={handleInterestChange}
+              enterButton
+              loading={loading}
+              className="rounded-lg"
+            />
+          </Form.Item>
+        </Form>
         <header className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">Latest News</h2>
           <a className="text-[#bd1e59] text-sm" href="#">
             See all →
           </a>
         </header>
-        <div className="grid grid-cols-3 gap-3">
-          <ListNews articles={articles} />
-        </div>
+        {loading && <h1>Hello world</h1>}
+
+        <Skeleton loading={loading}>
+          <div className="grid grid-cols-3 gap-3">
+            <ListNews articles={articles} />
+          </div>
+        </Skeleton>
       </section>
     </>
   );

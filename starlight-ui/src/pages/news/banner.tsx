@@ -8,7 +8,7 @@ const Banner: React.FC = () => {
           alt="Featured"
           className="rounded-lg w-full h-auto"
           height="300"
-          src="../../assets/react.svg"
+          src="/image.png"
           style={{
             aspectRatio: "400/300",
             objectFit: "cover",

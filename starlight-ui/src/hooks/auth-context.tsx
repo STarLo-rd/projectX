@@ -6,8 +6,8 @@ import authService, {
   getCurrentUser,
 } from "../services/authentication";
 import { CurrentUser, IChangePasswordInfo, IResetPasswordInfo } from "../types";
-import darkImage from "../images/skuchain_w350-100.png";
-import lightImage from "../images/skublu_dark.png";
+import darkImage from "../images/image.png";
+import lightImage from "../images/image.png";
 interface AuthContextType {
   user: CurrentUser;
   isDarkMode: any;

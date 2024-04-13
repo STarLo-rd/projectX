@@ -7,10 +7,11 @@ const Header: React.FC = () => {
         <div className="text-gray-600">
           <p className="uppercase text-sm tracking-widest">Stay up to date</p>
           <h1 className="text-3xl font-bold my-2">
-            Craft narratives
-            <span className="text-[#bd1e59]">✍️</span> that ignite inspiration
-            <span className="text-[#bd1e59]"> ,knowledge 🔍</span>
-            <span className="text-[#bd1e59]">📚</span>, and entertainment
+            Discover personalized news stories
+            <span className="text-[#bd1e59]">✍️</span> that spark curiosity
+            <span className="text-[#bd1e59]"> ,explore insights 🔍</span>
+            <span className="text-[#bd1e59]">📚</span>, and enjoy captivating
+            content
             <span className="text-[#bd1e59]">🎬</span>
           </h1>
         </div>

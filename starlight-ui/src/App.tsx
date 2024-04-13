@@ -3,6 +3,7 @@ import "./App.css";
 import { authRoutes, unAuthRoutes } from "./routes";
 import { RequireAuth, useAuth } from "./hooks/auth-context";
 import { useEffect } from "react";
+import AppShell from "./components/page-layout";
 
 function App() {
   const { setCurrentUser } = useAuth();
@@ -24,7 +25,15 @@ function App() {
   return (
     <>
       <Routes>
-        {routeItems}
+        <Route
+          path="/"
+          element={window.location.pathname === "/home" ? null : <AppShell />}
+        >
+          {routeItems}
+          {/* Define the route for PopcodeList */}
+        </Route>
+
+        {/* {routeItems} */}
         {aunAuthRouteItems}
       </Routes>
     </>
