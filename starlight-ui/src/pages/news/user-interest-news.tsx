@@ -1,17 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  Layout,
-  Input,
-  Card,
-  Typography,
-  Space,
-  Spin,
-  Form,
-  Skeleton,
-} from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { Layout, Input, Typography, Form, Skeleton } from "antd";
 import ListNews from "./list-news";
 const { Search } = Input;
 
@@ -40,18 +30,18 @@ const UserInterestNews: React.FC = () => {
     try {
       setLoading(true);
       console.log(query);
-      // const response = await axios.get<{ results: Article[] }>(
-      //   "https://newsdata.io/api/1/news",
-      //   {
-      //     params: {
-      //       apiKey: "pub_41485a751a20da677765a206b5537b348292b",
-      //       q: query,
-      //       language: "en",
-      //     },
-      //   }
-      // );
-      // console.log(response.data.results);
-      // setArticles(response.data.results);
+      const response = await axios.get<{ results: Article[] }>(
+        "https://newsdata.io/api/1/news",
+        {
+          params: {
+            apiKey: "pub_41485a751a20da677765a206b5537b348292b",
+            q: query,
+            language: "en",
+          },
+        }
+      );
+      console.log(response.data.results);
+      setArticles(response.data.results);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching news:", error);

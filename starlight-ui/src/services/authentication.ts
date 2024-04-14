@@ -104,6 +104,7 @@ export const refreshToken = async (): Promise<IUserAuthInfo> => {
                     },
                 }
             );
+            console.log("refresh token", data)
             return data;
         } catch (err) {
             throw new Error("Refresh Token failed");

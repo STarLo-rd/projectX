@@ -18,7 +18,6 @@ const AxiosInstance = axios.create({
 
 const checkJWTExpired = () => {
     const jwt = localStorage.getItem(TOKEN);
-
     if (!jwt) {
         return false;
     }
@@ -31,6 +30,7 @@ const checkJWTExpired = () => {
 AxiosInstance.interceptors.request.use(
     async (config) => {
         const jwt = localStorage.getItem(TOKEN);
+        console.log(jwt)
         if (apiUrls.includes(config.url as string)) {
             return config;
         }
