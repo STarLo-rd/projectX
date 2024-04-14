@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Tree from "react-d3-tree";
-import { renderNodeElement } from "./node-element";
+import NodeElement from "./node-element";
 import { useAuth } from "../../hooks/auth-context";
 import {
   generateRoadmap,
@@ -20,7 +20,7 @@ const RoadMap = () => {
   const { user } = useAuth();
   const [showHeading, setShowHeading] = useState(true);
   const [loading, setLoading] = useState(false); // New loading state
-
+  const [initialDepth, setInitialDepth] = useState(0);
   const appendChildren = (data, nodeName, children) => {
     return data.map((item) => {
       if (item.name === nodeName) {
@@ -40,6 +40,22 @@ const RoadMap = () => {
     });
   };
 
+  const calculateDepth = (data, nodeName) => {
+    let depth = 0;
+    const findDepth = (nodes, currentDepth) => {
+      for (const node of nodes) {
+        if (node.name === nodeName) {
+          depth = currentDepth;
+          return;
+        }
+        if (node.children) {
+          findDepth(node.children, currentDepth + 1);
+        }
+      }
+    };
+    findDepth(data, 0);
+    return depth;
+  };
   const handleNodeClick = async (nodeDatum) => {
     setSelectedNode(nodeDatum);
 
@@ -48,12 +64,11 @@ const RoadMap = () => {
         ? `${interest}, ${nodeDatum.name}`
         : nodeDatum.name;
 
-      setLoading(true); // Set loading state when fetching data
       const newData = await generateRoadmap(newInterest);
-      setLoading(false); // Reset loading state after fetching data
 
       if (newData.length) {
         const updatedData = appendChildren(myTreeData, nodeDatum.name, newData);
+        setInitialDepth(calculateDepth(updatedData, nodeDatum.name)); // Set the initial depth based on the new data
         setMyTreeData(updatedData);
       }
     }
@@ -133,10 +148,14 @@ const RoadMap = () => {
                 nodeSize={{ x: 500, y: 300 }}
                 translate={{ x: 700, y: 100 }}
                 allowForeignObjects={true}
-                initialDepth={0.02}
-                renderCustomNodeElement={(props) =>
-                  renderNodeElement(props, selectedNode, handleNodeClick)
-                }
+                initialDepth={initialDepth}
+                renderCustomNodeElement={(props) => (
+                  <NodeElement
+                    {...props}
+                    handleNodeClick={handleNodeClick}
+                    selectedNode={selectedNode}
+                  />
+                )}
               />
             )
           )}
