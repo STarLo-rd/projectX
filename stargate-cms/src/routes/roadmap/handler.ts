@@ -18,32 +18,48 @@ const generateRoadmap: RequestHandler<DefaultParams, any, any> = async (
     const prompt = `
 Please generate a comprehensive roadmap outlining the steps needed to advance ${interest} within the ${interest} domain. The roadmap should focus specifically on the essential concepts, techniques, and best practices related to ${interest}, rather than providing a general overview of the broader topic.
 
+Every object must contain name, description, isCompleted as false and children if needed
+
 Structure the roadmap as a stringified JSON object within an array format, following this structure:
 
 [
   {
     "name": "${interest}",
     "description": "High-level description of the main topic in approximately 3 lines.",
+    "isCompleted": false,
     "children": [
       {
         "name": "Section 1",
         "description": "Description of the first section in approximately 3 lines.",
+        "isCompleted": false,
         "children": [
           {
             "name": "Subsection 1.1",
             "description": "Description of the subsection in approximately 3 lines."
+            "isCompleted": false
           },
           {
             "name": "Subsection 1.2",
             "description": "Description of the subsection in approximately 3 lines."
-          }
+            "isCompleted": false
+          }...
         ]
       },
       {
         "name": "Section 2",
         "description": "Description of the second section in approximately 3 lines.",
+        "isCompleted": false
         "children": [
-          // ... (subsections)
+             {
+            "name": "Subsection 2.1",
+            "description": "Description of the subsection in approximately 3 lines."
+            "isCompleted": false
+          },
+          {
+            "name": "Subsection 2.2",
+            "description": "Description of the subsection in approximately 3 lines."
+            "isCompleted": false
+          }...
         ]
       }
     ]

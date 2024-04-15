@@ -1,4 +1,4 @@
-import { Spin } from "antd";
+import { Checkbox, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 
 const NodeElement = ({
@@ -6,6 +6,7 @@ const NodeElement = ({
   toggleNode,
   handleNodeClick,
   selectedNode,
+  updateCompletionStatus,
 }) => {
   const [isLoadingNode, setIsLoadingNode] = useState(false);
 
@@ -18,17 +19,32 @@ const NodeElement = ({
     }
   };
 
-
   return (
     <g>
       <circle
         r={10}
-        fill={nodeDatum.children ? "orange" : "black"}
+        // fill={nodeDatum.children ? "orange" : "black"}
+        fill={
+          nodeDatum.isCompleted
+            ? "#03c303"
+            : nodeDatum.children
+            ? "orange"
+            : "black"
+        }
         onClick={handleClick}
       />
-      <text fill="black" strokeWidth="0.7" x={15}>
+      <text
+        fill="black"
+        strokeWidth="0.7"
+        x={15}
+        onClick={handleClick}
+        style={{
+          textDecoration: nodeDatum.isCompleted ? "line-through" : "none",
+        }}
+      >
         {nodeDatum.name}
       </text>
+
       {nodeDatum.description && (
         <foreignObject
           x={15}
@@ -62,6 +78,13 @@ const NodeElement = ({
               }}
             />
           )}
+
+          <Checkbox
+            checked={nodeDatum.isCompleted}
+            onChange={(e) =>
+              updateCompletionStatus(nodeDatum, e.target.checked)
+            }
+          />
         </foreignObject>
       )}
     </g>

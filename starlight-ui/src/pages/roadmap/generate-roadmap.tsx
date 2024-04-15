@@ -58,6 +58,7 @@ const RoadMap = () => {
   };
   const handleNodeClick = async (nodeDatum) => {
     setSelectedNode(nodeDatum);
+    console.log(nodeDatum);
 
     if (nodeDatum.name && !nodeDatum.children) {
       const newInterest = interest
@@ -72,6 +73,38 @@ const RoadMap = () => {
         setMyTreeData(updatedData);
       }
     }
+  };
+
+  const updateCompletionStatus = (nodeDatum, isCompleted) => {
+    console.log(nodeDatum);
+    if (nodeDatum.children && nodeDatum.children.length > 0) {
+      notification.info({
+        message: "complete the child task",
+        duration: 5,
+      });
+      return;
+    }
+    const updateNode = (data, nodeName) => {
+      return data.map((item) => {
+        if (item.name === nodeName) {
+          return { ...item, isCompleted };
+        } else if (item.children) {
+          const updatedChildren = updateNode(item.children, nodeName);
+          const allCompleted = updatedChildren.every(
+            (child) => child.isCompleted
+          );
+          return {
+            ...item,
+            children: updatedChildren,
+            isCompleted: allCompleted,
+          };
+        }
+        return item;
+      });
+    };
+
+    const newData = updateNode(myTreeData, nodeDatum.name);
+    setMyTreeData(newData);
   };
 
   const getRoadmap = async () => {
@@ -148,12 +181,12 @@ const RoadMap = () => {
                 nodeSize={{ x: 500, y: 300 }}
                 translate={{ x: 700, y: 100 }}
                 allowForeignObjects={true}
-                initialDepth={initialDepth}
                 renderCustomNodeElement={(props) => (
                   <NodeElement
                     {...props}
                     handleNodeClick={handleNodeClick}
                     selectedNode={selectedNode}
+                    updateCompletionStatus={updateCompletionStatus}
                   />
                 )}
               />
