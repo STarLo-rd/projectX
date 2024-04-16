@@ -109,22 +109,6 @@ const RoadMap = () => {
   };
   
 
-  // const downloadRoadmap = () => {
-  //   const treeWrapper = document.getElementById("treeWrapper");
-  //   const svgElement = treeWrapper.querySelector("svg");
-  //   let svgData = svgElement.outerHTML;
-  
-  //   // Remove React-specific attributes and elements
-  //   svgData = svgData.replace(/ data-react.*?"/g, "");
-  //   svgData = svgData.replace(/<foreignObject.*?<\/foreignObject>/g, "");
-  
-  //   const blob = new Blob([svgData], { type: "image/svg+xml" });
-  //   const url = URL.createObjectURL(blob);
-  //   const link = document.createElement("a");
-  //   link.href = url;
-  //   link.download = "roadmap.svg";
-  //   link.click();
-  // };
 
   const updateCompletionStatus = (nodeDatum, isCompleted) => {
     console.log(nodeDatum);
@@ -169,7 +153,7 @@ const RoadMap = () => {
   };
 
   useEffect(() => {
-    if (myTreeData.length !== 0) {
+    if (myTreeData &&  myTreeData.length !== 0) {
       setShowHeading(false);
     } else {
       setShowHeading(true);
@@ -246,7 +230,7 @@ const RoadMap = () => {
             // <Skeleton active />
             <TreeSkeleton />
           ) : (
-            myTreeData.length > 0 && ( // Render tree if data is available
+           myTreeData && myTreeData?.length > 0 && ( // Render tree if data is available
               <Tree
                 data={myTreeData}
                 // orientation="vertical"

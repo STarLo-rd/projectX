@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { DefaultParams } from "../types";
 import payload from "payload";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { deductCredits } from "../../utils";
 
 // Initialize GoogleGenerativeAI
 const genAI = new GoogleGenerativeAI("AIzaSyBWABGD2ryXU63Y7qHhKEEC1SMaaIlaBIM");
@@ -12,7 +13,12 @@ const generateRoadmap: RequestHandler<DefaultParams, any, any> = async (
   _next
 ) => {
   try {
-    console.log(req.body);
+    console.log(req.user.id)
+    const deductionSuccessful = await deductCredits(req.user.id, 1); // Deduct 1 credit
+
+    if (!deductionSuccessful) {
+      return res.status(402).json({ error: "Insufficient credits to perform this operation" });
+    }
     const { interest } = req.body;
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     const prompt = `

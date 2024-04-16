@@ -5,6 +5,7 @@ import roadmapRouter from "./routes/roadmap";
 import explainRouter from "./routes/explainTopic";
 import nodemailer from "nodemailer";
 import mg from "nodemailer-mailgun-transport";
+import { checkCredits } from "./routes/middleware";
 require("dotenv").config();
 const app = express();
 
