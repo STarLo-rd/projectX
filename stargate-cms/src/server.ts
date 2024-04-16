@@ -6,6 +6,7 @@ import explainRouter from "./routes/explainTopic";
 import nodemailer from "nodemailer";
 import mg from "nodemailer-mailgun-transport";
 import { checkCredits } from "./routes/middleware";
+import './scheduled-tasks'; // This will automatically schedule your tasks when the server starts
 require("dotenv").config();
 const app = express();
 
