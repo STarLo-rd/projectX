@@ -1,5 +1,5 @@
 import { Checkbox, Spin } from "antd";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 
 const NodeElement = ({
   nodeDatum,
@@ -23,7 +23,6 @@ const NodeElement = ({
     <g>
       <circle
         r={10}
-        // fill={nodeDatum.children ? "orange" : "black"}
         fill={
           nodeDatum.isCompleted
             ? "#03c303"
@@ -67,6 +66,18 @@ const NodeElement = ({
             }}
           >
             {nodeDatum.description}
+            <div className="mt-2">
+              {!nodeDatum?.children && (
+                <Checkbox
+                  checked={nodeDatum.isCompleted}
+                  onChange={(e) =>
+                    updateCompletionStatus(nodeDatum, e.target.checked)
+                  }
+                >
+                  {nodeDatum.isCompleted ? "Completed" : "Mark as Completed"}
+                </Checkbox>
+              )}
+            </div>
           </div>
           {isLoadingNode && (
             <Spin
@@ -78,13 +89,6 @@ const NodeElement = ({
               }}
             />
           )}
-
-          <Checkbox
-            checked={nodeDatum.isCompleted}
-            onChange={(e) =>
-              updateCompletionStatus(nodeDatum, e.target.checked)
-            }
-          />
         </foreignObject>
       )}
     </g>
