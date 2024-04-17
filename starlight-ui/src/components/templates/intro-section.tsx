@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Typography, Form, Input } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
 
@@ -21,6 +21,17 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   onSubmit,
   showHeading,
 }) => {
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter") {
+      onSubmit();
+      if (textAreaRef.current) {
+        textAreaRef.current.blur(); // Remove focus from the input field
+      }
+    }
+  };
+
   return (
     <div className="relative bg-white py-12">
       <div className="container flex flex-col items-center justify-center gap-4 px-4 text-center md:gap-10">
@@ -38,18 +49,20 @@ const IntroSection: React.FC<IntroSectionProps> = ({
             </Typography>
           )}
         </div>
-
         <Form
           className={`flex flex-col max-w-sm gap-2 z-10 ${
             showHeading ? "translate-y-0" : "-translate-y-8"
           }`}
         >
           <Input.TextArea
+            ref={textAreaRef}
             className="mx-auto w-full h-12 p-3 pr-10 bg-gray-100 text-gray-800"
             placeholder={placeholder}
             autoSize={{ minRows: 2, maxRows: 6 }}
             value={value}
             onChange={(e) => onChange(e.target.value)}
+            onPressEnter={onSubmit}
+            onKeyDown={handleKeyDown}
             style={{ width: "400px", overflow: "hidden" }}
           />
           <button
@@ -61,54 +74,52 @@ const IntroSection: React.FC<IntroSectionProps> = ({
           </button>
         </Form>
       </div>
-
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="animated-bg"></div>
       </div>
-
       <style>{`
-.animated-bg {
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: linear-gradient(to bottom, #fff, #fff 20%, #f0f0f0 80%, #fff 100%);
-animation: animate 10s linear infinite;
-}
+        .animated-bg {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(to bottom, #fff, #fff 20%, #f0f0f0 80%, #fff 100%);
+          animation: animate 10s linear infinite;
+        }
 
-.animated-bg::before {
-content: '';
-position: absolute;
-top: 0;
-left: 50%;
-width: 100%;
-height: 100%;
-background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.733), transparent);
-animation: animate 5s linear infinite;
-}
+        .animated-bg::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 50%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.733), transparent);
+          animation: animate 5s linear infinite;
+        }
 
-.animated-bg::after {
-content: '';
-position: absolute;
-top: 0;
-left: 50%;
-width: 100%;
-height: 100%;
-background: linear-gradient(to left, transparent, rgba(255, 255, 255, 0.733), transparent);
-animation: animate 7s linear infinite;
-}
+        .animated-bg::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 50%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(to left, transparent, rgba(255, 255, 255, 0.733), transparent);
+          animation: animate 7s linear infinite;
+        }
 
-@keyframes animate {
-0% {
-transform: translateX(-100%);
-}
-100% {
-transform: translateX(100%);
-}
-}
-`}</style>
+        @keyframes animate {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
+      `}</style>
     </div>
   );
 };

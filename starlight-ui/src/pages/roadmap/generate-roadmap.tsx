@@ -7,10 +7,16 @@ import {
   getUserRoadmap,
   saveRoadmap,
 } from "../../services/roadmap";
-import { Button, notification, Progress, Select } from "antd";
+import { Button, FloatButton, notification, Progress, Select } from "antd";
 import "./roadmap.css";
 import IntroSection from "../../components/templates/intro-section";
-import { SaveOutlined } from "@ant-design/icons";
+import {
+  CloudDownloadOutlined,
+  CommentOutlined,
+  CopyOutlined,
+  CustomerServiceOutlined,
+  SaveOutlined,
+} from "@ant-design/icons";
 import TreeSkeleton from "../../components/skeleton/tree-skeleton";
 import {
   calculateCompletionPercentage,
@@ -21,6 +27,7 @@ import {
   pathFuncOptions,
   updateNodeCompletion,
 } from "../../utils/roadmapUtils";
+import CelebrationAnimation from "../../components/templates/celebration-animation";
 
 const RoadMap = () => {
   const [myTreeData, setMyTreeData] = useState([]);
@@ -62,7 +69,10 @@ const RoadMap = () => {
     setSelectedNode(nodeDatum);
     console.log(nodeDatum);
 
-    if (nodeDatum.name && !nodeDatum.children) {
+    if (
+      nodeDatum.name &&
+      (!nodeDatum.children || nodeDatum.children.length == 0)
+    ) {
       const newInterest = interest
         ? `${interest}, ${nodeDatum.name}`
         : nodeDatum.name;
@@ -79,7 +89,6 @@ const RoadMap = () => {
   const handleDownload = () => downloadRoadmap(myTreeData);
 
   const updateCompletionStatus = (nodeDatum, isCompleted) => {
-    console.log(nodeDatum);
     if (nodeDatum.children && nodeDatum.children.length > 0) {
       notification.info({
         message: "complete the child task",
@@ -110,7 +119,6 @@ const RoadMap = () => {
       setShowHeading(false);
       const percentage = calculateCompletionPercentage(myTreeData);
       setCompletionPercent(percentage);
-      console.log(percentage);
     } else {
       setShowHeading(true);
     }
@@ -132,12 +140,48 @@ const RoadMap = () => {
     const data = await saveRoadmap(user, JSON.stringify(myTreeData));
     notification.success({
       message: data.message,
-      duration: 5,
+      duration: 10,
     });
+  };
+
+  const addChildNode = (parentNodeDatum, newNode) => {
+    const updatedData = appendChildren(myTreeData, parentNodeDatum.name, [
+      newNode,
+    ]);
+    setMyTreeData(updatedData);
+  };
+
+  const deleteNode = (nodeDatum) => {
+    const removeNode = (data, target) => {
+      return data.reduce((acc, node) => {
+        if (node.name === target.name) {
+          return acc;
+        }
+        if (node.children) {
+          node.children = removeNode(node.children, target);
+        }
+        acc.push(node);
+        return acc;
+      }, []);
+    };
+
+    const updatedData = removeNode([...myTreeData], nodeDatum); // Use a copy of myTreeData to trigger a state update
+    setMyTreeData(updatedData); // Update the state with the new data
   };
 
   return (
     <div>
+      <>
+        <FloatButton.Group
+          trigger="click"
+          type="default"
+          style={{ right: 20 }}
+          icon={<CopyOutlined />}
+        >
+          <FloatButton onClick={addRoadmap} icon={<SaveOutlined />} tooltip="save roadmap" />
+          <FloatButton onClick={handleDownload} tooltip="download roadmap" icon={<CloudDownloadOutlined />} />
+        </FloatButton.Group>
+      </>
       <IntroSection
         title="The Roadmap"
         description="Our vision for the future. The features we're working on. The progress we've made."
@@ -148,60 +192,50 @@ const RoadMap = () => {
         showHeading={showHeading}
       />
       <div className="App bg-white shadow-lg rounded-xl p-6 w-4/5 m-auto mt-8">
-    <Progress
-      className="w-full"
-      percent={Math.round(calculateCompletionPercentage(myTreeData))}
-      strokeWidth={12}
-      status="active"
-      strokeColor={getProgressColorClass(
-        Math.round(calculateCompletionPercentage(myTreeData))
-      )}
-      trailColor="#f0f2f5"
-    />
+        <Progress
+          className="w-full"
+          percent={Math.round(calculateCompletionPercentage(myTreeData))}
+          strokeWidth={12}
+          status="active"
+          strokeColor={getProgressColorClass(
+            Math.round(calculateCompletionPercentage(myTreeData))
+          )}
+          trailColor="#f0f2f5"
+        />
 
-    <p className="text-center text-lg text-gray-700 mt-4 mb-6">
-      {completionMessage(calculateCompletionPercentage(myTreeData))}
-    </p>
-    <div className="flex justify-between items-center mb-6">
-      <div className="flex items-center gap-2">
-        <label className="text-gray-600 font-semibold">Orientation:</label>
-        <Select
-          value={orientation}
-          onChange={(value) => handleOptionChange("orientation", value)}
-          options={orientationOptions}
-          className="w-40"
-        />
+        <p className="text-center text-lg text-gray-700 mt-4 mb-6">
+          {completionMessage(calculateCompletionPercentage(myTreeData))}
+        </p>
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-2">
+            <label className="text-gray-600 font-semibold">Orientation:</label>
+            <Select
+              value={orientation}
+              onChange={(value) => handleOptionChange("orientation", value)}
+              options={orientationOptions}
+              className="w-40"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-gray-600 font-semibold">
+              Path Function:
+            </label>
+            <Select
+              value={pathFunc}
+              onChange={(value) => handleOptionChange("pathFunc", value)}
+              options={pathFuncOptions}
+              className="w-40"
+            />
+          </div>
+        </div>
       </div>
-      <div className="flex items-center gap-2">
-        <label className="text-gray-600 font-semibold">Path Function:</label>
-        <Select
-          value={pathFunc}
-          onChange={(value) => handleOptionChange("pathFunc", value)}
-          options={pathFuncOptions}
-          className="w-40"
-        />
-      </div>
-      <Button
-        type="primary"
-        icon={<SaveOutlined />}
-        onClick={addRoadmap}
-        className="bg-blue-600 hover:bg-blue-800 text-white font-semibold"
-      >
-        Save Roadmap
-      </Button>
-      <Button
-        type="primary"
-        onClick={handleDownload}
-        className="bg-green-600 hover:bg-green-800 text-white ml-4 font-semibold"
-      >
-        Download Roadmap
-      </Button>
-    </div>
-  </div>
 
       <div id="treeWrapper" style={{ width: "95%", height: "100vh" }}>
+        <CelebrationAnimation
+          completionPercentage={calculateCompletionPercentage(myTreeData)}
+        />
         {loading ? (
-           // Render loading skeleton when loading
+          // Render loading skeleton when loading
           // <Skeleton active />
           <TreeSkeleton />
         ) : (
@@ -212,7 +246,7 @@ const RoadMap = () => {
               orientation={orientation}
               nodeSvgShape={{ shape: "circle", shapeProps: { r: 10 } }}
               pathFunc={pathFunc}
-              nodeSize={{ x: 500, y: 300 }}
+              nodeSize={{ x: orientation === "horizontal" && pathFunc ==="step" ? 900: 500, y: 300 }}
               translate={{ x: 700, y: 100 }}
               allowForeignObjects={true}
               renderCustomNodeElement={(props) => (
@@ -221,6 +255,8 @@ const RoadMap = () => {
                   handleNodeClick={handleNodeClick}
                   selectedNode={selectedNode}
                   updateCompletionStatus={updateCompletionStatus}
+                  addChildNode={addChildNode}
+                  deleteNode={deleteNode}
                 />
               )}
             />

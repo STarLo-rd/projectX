@@ -1,3 +1,4 @@
+import { PlusCircleOutlined } from "@ant-design/icons";
 import { Checkbox, Spin } from "antd";
 import { useState } from "react";
 
@@ -7,17 +8,37 @@ const NodeElement = ({
   handleNodeClick,
   selectedNode,
   updateCompletionStatus,
+  addChildNode,
+  deleteNode,
 }) => {
   const [isLoadingNode, setIsLoadingNode] = useState(false);
 
+  const [newNodeTitle, setNewNodeTitle] = useState("");
+  const [newNodeDescription, setNewNodeDescription] = useState("");
+  const hasChildren = nodeDatum.children && nodeDatum.children.length > 0;
+
+
+  const handleAddChildNode = () => {
+    if (newNodeTitle.trim() !== "") {
+      addChildNode(nodeDatum, {
+        name: newNodeTitle.trim(),
+        description: newNodeDescription.trim(),
+        isCompleted: false,
+      });
+      setNewNodeTitle("");
+      setNewNodeDescription("");
+    }
+  };
+
   const handleClick = async () => {
     toggleNode();
-    if (nodeDatum.name && !nodeDatum.children) {
+    if (nodeDatum.name && !hasChildren ) {
       setIsLoadingNode(true);
       await handleNodeClick(nodeDatum);
       setIsLoadingNode(false);
     }
   };
+
 
   return (
     <g>
@@ -26,7 +47,7 @@ const NodeElement = ({
         fill={
           nodeDatum.isCompleted
             ? "#03c303"
-            : nodeDatum.children
+            : hasChildren
             ? "orange"
             : "black"
         }
@@ -48,7 +69,7 @@ const NodeElement = ({
         <foreignObject
           x={15}
           y={25}
-          width={380}
+          width={420}
           height={200}
           style={{
             minWidth: "400px",
@@ -67,7 +88,7 @@ const NodeElement = ({
           >
             {nodeDatum.description}
             <div className="mt-2">
-              {!nodeDatum?.children && (
+              {!hasChildren && (
                 <Checkbox
                   checked={nodeDatum.isCompleted}
                   onChange={(e) =>
@@ -76,6 +97,17 @@ const NodeElement = ({
                 >
                   {nodeDatum.isCompleted ? "Completed" : "Mark as Completed"}
                 </Checkbox>
+              )}
+
+              {!hasChildren && (
+                <text
+                  x={10}
+                  y={5}
+                  className="text-red-700 ml-6"
+                  onClick={() => deleteNode(nodeDatum)}
+                >
+                  Delete
+                </text>
               )}
             </div>
           </div>
@@ -88,6 +120,33 @@ const NodeElement = ({
                 alignItems: "center",
               }}
             />
+          )}
+
+          {hasChildren && (
+            <div> 
+            <g transform="translate(0, 30)"  className="flex-col items-center">
+              <div className="flex items-center space-x-2 w-11/12">
+                <input
+                  type="text"
+                  value={newNodeTitle}
+                  onChange={(e) => setNewNodeTitle(e.target.value)}
+                  placeholder="Enter new node title"
+                  className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none"
+                />
+                <input
+                  type="text"
+                  value={newNodeDescription}
+                  onChange={(e) => setNewNodeDescription(e.target.value)}
+                  placeholder="Enter new node description"
+                  className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none"
+                />
+
+                <PlusCircleOutlined  className="text-green-600" onClick={handleAddChildNode} />
+              
+              </div>
+           
+            </g>
+            </div>
           )}
         </foreignObject>
       )}
