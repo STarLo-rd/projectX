@@ -88,37 +88,37 @@ export const calculateCompletionPercentage = (nodes) => {
   let completedNodes = 0;
 
   const traverseNodes = (node) => {
-    if (!node) return false; // Treat undefined or null nodes as not completed
+    if (!node) return 0; // Treat undefined or null nodes as not completed for safety
 
-    totalNodes += 1; // Count this node
+    totalNodes++; // Count this node
 
-    let allChildrenCompleted = true;
+    let childrenCompleted = 0;
+    let childrenCount = 0;
+
     if (node.children && node.children.length > 0) {
-      // Check if all children are completed
-      allChildrenCompleted = node.children.every(traverseNodes);
-    } else {
-      // If there are no children, only consider this node completed if it is explicitly marked so
-      allChildrenCompleted = !!node.isCompleted;
+      // Traverse children and count completed nodes
+      for (const child of node.children) {
+        childrenCount++;
+        childrenCompleted += traverseNodes(child);
+      }
     }
 
-    // Determine this node's completion based on its own status or its children's status
-    if (node.isCompleted || allChildrenCompleted) {
-      completedNodes += 1;
-      return true;
+    // Check if all children are completed and the node itself is marked completed
+    if (childrenCompleted === childrenCount && node.isCompleted) {
+      completedNodes++;
+      return 1; // Return 1 to indicate this node and its children are completed
     }
 
-    return false;
+    return 0; // Return 0 to indicate this node or its children are not completed
   };
 
-  // Process each root node
+  // Start traversal from each top-level node
   nodes.forEach(traverseNodes);
 
   // Calculate completion percentage
-  const percentage = (completedNodes / totalNodes) * 100;
-  return Math.round(percentage * 100) / 100; // Round to two decimal places
+  const percentage = totalNodes > 0 ? (completedNodes / totalNodes) * 100 : 0;
+  return Math.round(percentage * 100) / 100; // Round to two decimal places for readability
 };
-
-
 
 
 export const completionMessage = (completionPercent) => {
