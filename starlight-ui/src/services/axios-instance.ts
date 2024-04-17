@@ -36,8 +36,8 @@ AxiosInstance.interceptors.request.use(
         }
         if (
             jwt &&
-            window.location.pathname !== loginUrl &&
-            window.location.pathname !== homeUrl
+            window.location.pathname !== loginUrl
+            // window.location.pathname !== homeUrl
         ) {
             const payload: any = jwtDecode(jwt);
             const isExpired: any = payload.exp * 1000 - Date.now();

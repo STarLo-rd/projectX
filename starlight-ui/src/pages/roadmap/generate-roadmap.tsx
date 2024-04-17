@@ -2,17 +2,25 @@ import { useEffect, useState } from "react";
 import Tree from "react-d3-tree";
 import NodeElement from "./node-element";
 import { useAuth } from "../../hooks/auth-context";
-import { jsPDF } from "jspdf";
 import {
   generateRoadmap,
   getUserRoadmap,
   saveRoadmap,
 } from "../../services/roadmap";
-import { Button, notification, Select, Skeleton } from "antd";
+import { Button, notification, Progress, Select } from "antd";
 import "./roadmap.css";
 import IntroSection from "../../components/templates/intro-section";
 import { SaveOutlined } from "@ant-design/icons";
 import TreeSkeleton from "../../components/skeleton/tree-skeleton";
+import {
+  calculateCompletionPercentage,
+  completionMessage,
+  downloadRoadmap,
+  getProgressColorClass,
+  orientationOptions,
+  pathFuncOptions,
+  updateNodeCompletion,
+} from "../../utils/roadmapUtils";
 
 const RoadMap = () => {
   const [myTreeData, setMyTreeData] = useState([]);
@@ -23,16 +31,7 @@ const RoadMap = () => {
   const [loading, setLoading] = useState(false);
   const [orientation, setOrientation] = useState("vertical");
   const [pathFunc, setPathFunc] = useState("step");
-  const orientationOptions = [
-    { label: "Vertical", value: "vertical" },
-    { label: "Horizontal", value: "horizontal" },
-  ];
-
-  const pathFuncOptions = [
-    { label: "Step", value: "step" },
-    { label: "Straight", value: "straight" },
-    { label: "Curved", value: "curved" },
-  ];
+  const [completionPercent, setCompletionPercent] = useState(0);
   const handleOptionChange = (option, value) => {
     if (option === "orientation") {
       setOrientation(value);
@@ -70,45 +69,14 @@ const RoadMap = () => {
 
       const newData = await generateRoadmap(newInterest);
 
-      if (newData.length) {
+      if (newData && newData.length) {
         const updatedData = appendChildren(myTreeData, nodeDatum.name, newData);
         setMyTreeData(updatedData);
       }
     }
   };
 
-  const downloadRoadmap = ( ) => {
-    const roadmap = myTreeData
-    const doc = new jsPDF();
-  
-    const generateList = (items, depth: number, startY: number) => {
-      let y = startY;
-      items.forEach((item, index) => {
-        const prefix = `${index + 1}.`;
-        const indentation = "  ".repeat(depth);
-        const text = `${indentation}${prefix} ${item.name}`;
-  
-        doc.text(text, 10, y);
-        y += 7; // Increase vertical spacing
-  
-        if (y >= doc.internal.pageSize.height - 10) {
-          doc.addPage();
-          y = 10;
-        }
-  
-        if (item.children) {
-          y = generateList(item.children, depth + 1, y);
-        }
-      });
-      return y; // Return updated y position
-    };
-  
-    generateList(roadmap, 0, 10);
-  
-    doc.save("roadmap.pdf");
-  };
-  
-
+  const handleDownload = () => downloadRoadmap(myTreeData);
 
   const updateCompletionStatus = (nodeDatum, isCompleted) => {
     console.log(nodeDatum);
@@ -119,26 +87,11 @@ const RoadMap = () => {
       });
       return;
     }
-    const updateNode = (data, nodeName) => {
-      return data.map((item) => {
-        if (item.name === nodeName) {
-          return { ...item, isCompleted };
-        } else if (item.children) {
-          const updatedChildren = updateNode(item.children, nodeName);
-          const allCompleted = updatedChildren.every(
-            (child) => child.isCompleted
-          );
-          return {
-            ...item,
-            children: updatedChildren,
-            isCompleted: allCompleted,
-          };
-        }
-        return item;
-      });
-    };
-
-    const newData = updateNode(myTreeData, nodeDatum.name);
+    const newData = updateNodeCompletion(
+      myTreeData,
+      nodeDatum.name,
+      isCompleted
+    );
     setMyTreeData(newData);
   };
 
@@ -153,8 +106,11 @@ const RoadMap = () => {
   };
 
   useEffect(() => {
-    if (myTreeData &&  myTreeData.length !== 0) {
+    if (myTreeData && myTreeData.length !== 0) {
       setShowHeading(false);
+      const percentage = calculateCompletionPercentage(myTreeData);
+      setCompletionPercent(percentage);
+      console.log(percentage);
     } else {
       setShowHeading(true);
     }
@@ -191,68 +147,85 @@ const RoadMap = () => {
         onSubmit={() => handleRoadmap(interest)}
         showHeading={showHeading}
       />
-      <div className="App">
-        <div className="flex justify-start mb-4 ml-3">
-          <div className="ml-4">
-            <label>Orientation: </label>
-            <Select
-              value={orientation}
-              onChange={(value) => handleOptionChange("orientation", value)}
-              options={orientationOptions}
+      <div className="App bg-white shadow-lg rounded-xl p-6 w-4/5 m-auto mt-8">
+    <Progress
+      className="w-full"
+      percent={Math.round(calculateCompletionPercentage(myTreeData))}
+      strokeWidth={12}
+      status="active"
+      strokeColor={getProgressColorClass(
+        Math.round(calculateCompletionPercentage(myTreeData))
+      )}
+      trailColor="#f0f2f5"
+    />
+
+    <p className="text-center text-lg text-gray-700 mt-4 mb-6">
+      {completionMessage(calculateCompletionPercentage(myTreeData))}
+    </p>
+    <div className="flex justify-between items-center mb-6">
+      <div className="flex items-center gap-2">
+        <label className="text-gray-600 font-semibold">Orientation:</label>
+        <Select
+          value={orientation}
+          onChange={(value) => handleOptionChange("orientation", value)}
+          options={orientationOptions}
+          className="w-40"
+        />
+      </div>
+      <div className="flex items-center gap-2">
+        <label className="text-gray-600 font-semibold">Path Function:</label>
+        <Select
+          value={pathFunc}
+          onChange={(value) => handleOptionChange("pathFunc", value)}
+          options={pathFuncOptions}
+          className="w-40"
+        />
+      </div>
+      <Button
+        type="primary"
+        icon={<SaveOutlined />}
+        onClick={addRoadmap}
+        className="bg-blue-600 hover:bg-blue-800 text-white font-semibold"
+      >
+        Save Roadmap
+      </Button>
+      <Button
+        type="primary"
+        onClick={handleDownload}
+        className="bg-green-600 hover:bg-green-800 text-white ml-4 font-semibold"
+      >
+        Download Roadmap
+      </Button>
+    </div>
+  </div>
+
+      <div id="treeWrapper" style={{ width: "95%", height: "100vh" }}>
+        {loading ? (
+           // Render loading skeleton when loading
+          // <Skeleton active />
+          <TreeSkeleton />
+        ) : (
+          myTreeData &&
+          myTreeData?.length > 0 && ( // Render tree if data is available
+            <Tree
+              data={myTreeData}
+              orientation={orientation}
+              nodeSvgShape={{ shape: "circle", shapeProps: { r: 10 } }}
+              pathFunc={pathFunc}
+              nodeSize={{ x: 500, y: 300 }}
+              translate={{ x: 700, y: 100 }}
+              allowForeignObjects={true}
+              renderCustomNodeElement={(props) => (
+                <NodeElement
+                  {...props}
+                  handleNodeClick={handleNodeClick}
+                  selectedNode={selectedNode}
+                  updateCompletionStatus={updateCompletionStatus}
+                />
+              )}
             />
-          </div>
-          <div className="ml-4">
-            <label>Path Function: </label>
-            <Select
-              value={pathFunc}
-              onChange={(value) => handleOptionChange("pathFunc", value)}
-              options={pathFuncOptions}
-            />
-          </div>
-          <Button
-            type="primary"
-            icon={<SaveOutlined />}
-            onClick={addRoadmap}
-            className="bg-blue-500 hover:bg-blue-700 text-white"
-          >
-            Save Roadmap
-          </Button>
-          <Button
-            type="primary"
-            onClick={downloadRoadmap}
-            className="bg-blue-500 hover:bg-blue-700 text-white ml-4"
-          >
-            Download Roadmap
-          </Button>
-        </div>
-        <div id="treeWrapper" style={{ width: "95%", height: "100vh" }}>
-          {loading ? ( // Render loading skeleton when loading
-            // <Skeleton active />
-            <TreeSkeleton />
-          ) : (
-           myTreeData && myTreeData?.length > 0 && ( // Render tree if data is available
-              <Tree
-                data={myTreeData}
-                // orientation="vertical"
-                orientation={orientation}
-                nodeSvgShape={{ shape: "circle", shapeProps: { r: 10 } }}
-                pathFunc={pathFunc}
-                // pathFunc="step"
-                nodeSize={{ x: 500, y: 300 }}
-                translate={{ x: 700, y: 100 }}
-                allowForeignObjects={true}
-                renderCustomNodeElement={(props) => (
-                  <NodeElement
-                    {...props}
-                    handleNodeClick={handleNodeClick}
-                    selectedNode={selectedNode}
-                    updateCompletionStatus={updateCompletionStatus}
-                  />
-                )}
-              />
-            )
-          )}
-        </div>
+          )
+        )}
       </div>
     </div>
   );

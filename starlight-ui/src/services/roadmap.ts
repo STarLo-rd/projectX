@@ -62,7 +62,7 @@ async function saveRoadmap(user: { email: string }, treeData: string): Promise<R
 }
 
 function handleRequestError(error: any) {
-  notification.error({ message: error.response.data.error });
+  notification.error({ message: "error in fetching data" });
 }
 
 export { generateRoadmap, saveRoadmap, getUserRoadmap };
