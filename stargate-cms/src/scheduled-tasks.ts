@@ -22,7 +22,7 @@ const refillCredits = async () => {
         collection: 'users',
         id: user.id,
         data: {
-          credits: 10 // Reset credits to 10 for each user
+          credits: 80 // Reset credits to 80 for each user
         }
       });
     });
