@@ -3,6 +3,7 @@ import Tree from "react-d3-tree";
 import NodeElement from "./node-element";
 import { useAuth } from "../../hooks/auth-context";
 import {
+  deleteRoadmapInterest,
   generateRoadmap,
   getUserRoadmap,
   saveRoadmap,
@@ -11,11 +12,12 @@ import { Button, FloatButton, notification, Progress, Select } from "antd";
 import "./roadmap.css";
 import IntroSection from "../../components/templates/intro-section";
 import {
+  BorderHorizontalOutlined,
   CloudDownloadOutlined,
-  CommentOutlined,
-  CopyOutlined,
-  CustomerServiceOutlined,
+  DeleteOutlined,
+  InfoCircleOutlined,
   SaveOutlined,
+  VerticalAlignTopOutlined,
 } from "@ant-design/icons";
 import TreeSkeleton from "../../components/skeleton/tree-skeleton";
 import {
@@ -23,8 +25,6 @@ import {
   completionMessage,
   downloadRoadmap,
   getProgressColorClass,
-  orientationOptions,
-  pathFuncOptions,
   updateNodeCompletion,
 } from "../../utils/roadmapUtils";
 import CelebrationAnimation from "../../components/templates/celebration-animation";
@@ -39,11 +39,19 @@ const RoadMap = () => {
   const [orientation, setOrientation] = useState("vertical");
   const [pathFunc, setPathFunc] = useState("step");
   const [completionPercent, setCompletionPercent] = useState(0);
-  const handleOptionChange = (option, value) => {
-    if (option === "orientation") {
-      setOrientation(value);
-    } else if (option === "pathFunc") {
-      setPathFunc(value);
+  const [roadmaps, setRoadmaps] = useState([]);
+
+  const [typedInterest, setTypedInterest] = useState(""); // For input field
+  const [selectedInterest, setSelectedInterest] = useState(""); // For dropdown selection
+
+  // Handler for dropdown change
+  const handleInterestChange = (selectedTitle) => {
+    setSelectedInterest(selectedTitle);
+    const interestData = roadmaps.find(
+      (interest) => interest.title === selectedTitle
+    );
+    if (interestData) {
+      setMyTreeData(JSON.parse(interestData.data));
     }
   };
   const appendChildren = (data, nodeName, children) => {
@@ -82,6 +90,15 @@ const RoadMap = () => {
       if (newData && newData.length) {
         const updatedData = appendChildren(myTreeData, nodeDatum.name, newData);
         setMyTreeData(updatedData);
+        // Also update the roadmaps state to reflect this change
+        const updatedRoadmaps = roadmaps.map((roadmap) => {
+          if (roadmap.title === selectedInterest) {
+            return { ...roadmap, data: JSON.stringify(updatedData) };
+          }
+          return roadmap;
+        });
+
+        setRoadmaps(updatedRoadmaps);
       }
     }
   };
@@ -104,15 +121,23 @@ const RoadMap = () => {
     setMyTreeData(newData);
   };
 
-  const getRoadmap = async () => {
-    setLoading(true); // Set loading state when fetching data
-    const roadmap = await getUserRoadmap(user.email);
-    setLoading(false); // Reset loading state after fetching data
-
-    if (roadmap && roadmap.data) {
-      setMyTreeData(JSON.parse(roadmap.data) || []);
+  const fetchRoadmaps = async () => {
+    setLoading(true);
+    const roadmapData = await getUserRoadmap(user.email);
+    setLoading(false);
+    if (roadmapData && roadmapData.interests) {
+      setRoadmaps(roadmapData.interests);
+      if (!selectedInterest && roadmapData.interests.length > 0) {
+        setSelectedInterest(roadmapData.interests[0].title);
+        setMyTreeData(JSON.parse(roadmapData.interests[0].data));
+      }
     }
   };
+
+  // Load interests on component mount
+  useEffect(() => {
+    fetchRoadmaps();
+  }, [user]);
 
   useEffect(() => {
     if (myTreeData && myTreeData.length !== 0) {
@@ -124,20 +149,23 @@ const RoadMap = () => {
     }
   }, [myTreeData]);
 
-  useEffect(() => {
-    getRoadmap();
-  }, [user]);
-
-  const handleRoadmap = async (interest: string) => {
-    setLoading(true); // Set loading state when fetching data
-    const data = await generateRoadmap(interest);
-    setLoading(false); // Reset loading state after fetching data
-
-    setMyTreeData(data);
+  // Handler for submitting a new interest
+  const handleRoadmap = async () => {
+    setLoading(true);
+    const data = await generateRoadmap(typedInterest);
+    setSelectedInterest(typedInterest);
+    setLoading(false);
+    if (data) {
+      setMyTreeData(data);
+    }
   };
 
   const addRoadmap = async () => {
-    const data = await saveRoadmap(user, JSON.stringify(myTreeData));
+    const data = await saveRoadmap(
+      user,
+      selectedInterest,
+      JSON.stringify(myTreeData)
+    );
     notification.success({
       message: data.message,
       duration: 10,
@@ -149,6 +177,15 @@ const RoadMap = () => {
       newNode,
     ]);
     setMyTreeData(updatedData);
+    // Also update the roadmaps state to reflect this change
+    const updatedRoadmaps = roadmaps.map((roadmap) => {
+      if (roadmap.title === selectedInterest) {
+        return { ...roadmap, data: JSON.stringify(updatedData) };
+      }
+      return roadmap;
+    });
+
+    setRoadmaps(updatedRoadmaps);
   };
 
   const deleteNode = (nodeDatum) => {
@@ -169,28 +206,76 @@ const RoadMap = () => {
     setMyTreeData(updatedData); // Update the state with the new data
   };
 
+  const handleDeleteInterest = async (interestTitle) => {
+    await deleteRoadmapInterest(user.email, interestTitle);
+    // Update local state to reflect the change
+    const updatedRoadmaps = roadmaps.filter(
+      (interest) => interest.title !== interestTitle
+    );
+    setRoadmaps(updatedRoadmaps);
+    // Reset selected interest if it was the one deleted
+    if (selectedInterest === interestTitle) {
+      setSelectedInterest(
+        updatedRoadmaps.length > 0 ? updatedRoadmaps[0].title : ""
+      );
+      setMyTreeData(
+        updatedRoadmaps.length > 0 ? JSON.parse(updatedRoadmaps[0].data) : []
+      );
+    }
+  };
+
+  const toggleOrientation = () => {
+    const newOrientation =
+      orientation === "vertical" ? "horizontal" : "vertical";
+    setOrientation(newOrientation);
+    setPathFunc(newOrientation === "vertical" ? "step" : "curved");
+  };
+
   return (
-    <div>
+    <div className="m-auto">
       <>
         <FloatButton.Group
           trigger="click"
           type="default"
           style={{ right: 20 }}
-          icon={<CopyOutlined />}
+          icon={<InfoCircleOutlined />}
         >
-          <FloatButton onClick={addRoadmap} icon={<SaveOutlined />} tooltip="save roadmap" />
-          <FloatButton onClick={handleDownload} tooltip="download roadmap" icon={<CloudDownloadOutlined />} />
+          <FloatButton
+            onClick={toggleOrientation}
+            tooltip={`Switch to ${
+              orientation === "vertical" ? "horizontal" : "vertical"
+            } layout`}
+            icon={
+              orientation === "vertical" ? (
+                <BorderHorizontalOutlined />
+              ) : (
+                <VerticalAlignTopOutlined />
+              )
+            }
+          />
+          <FloatButton
+            onClick={addRoadmap}
+            icon={<SaveOutlined />}
+            tooltip="save roadmap"
+          />
+          <FloatButton
+            onClick={handleDownload}
+            tooltip="download roadmap"
+            icon={<CloudDownloadOutlined />}
+          />
         </FloatButton.Group>
       </>
       <IntroSection
         title="The Roadmap"
         description="Our vision for the future. The features we're working on. The progress we've made."
         placeholder="enter your interest"
-        value={interest}
-        onChange={setInterest}
-        onSubmit={() => handleRoadmap(interest)}
+        value={typedInterest}
+        onChange={setTypedInterest}
+        // onSubmit={() => handleRoadmap(interest)}
+        onSubmit={handleRoadmap}
         showHeading={showHeading}
       />
+
       <div className="App bg-white shadow-lg rounded-xl p-6 w-4/5 m-auto mt-8">
         <Progress
           className="w-full"
@@ -206,28 +291,45 @@ const RoadMap = () => {
         <p className="text-center text-lg text-gray-700 mt-4 mb-6">
           {completionMessage(calculateCompletionPercentage(myTreeData))}
         </p>
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-2">
-            <label className="text-gray-600 font-semibold">Orientation:</label>
-            <Select
-              value={orientation}
-              onChange={(value) => handleOptionChange("orientation", value)}
-              options={orientationOptions}
-              className="w-40"
-            />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="text-gray-600 font-semibold">
-              Path Function:
-            </label>
-            <Select
-              value={pathFunc}
-              onChange={(value) => handleOptionChange("pathFunc", value)}
-              options={pathFuncOptions}
-              className="w-40"
-            />
-          </div>
-        </div>
+        <Select
+          className="w-full max-w-md mx-auto my-4"
+          value={selectedInterest}
+          onChange={handleInterestChange}
+          placeholder="Select an interest"
+          dropdownRender={(menu) => (
+            <div>
+              {menu}
+              <div style={{ padding: "8px", textAlign: "center" }}>
+                <Button type="text" onClick={(e) => e.stopPropagation()}>
+                  Manage Interests
+                </Button>
+              </div>
+            </div>
+          )}
+        >
+          {roadmaps.map((interest) => (
+            <Select.Option key={interest.title} value={interest.title}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <span>{interest.title}</span>
+                <Button
+                  type="text"
+                  icon={<DeleteOutlined />}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent Select onChange trigger
+                    handleDeleteInterest(interest.title);
+                  }}
+                  style={{ color: "red", marginLeft: 8 }}
+                />
+              </div>
+            </Select.Option>
+          ))}
+        </Select>
       </div>
 
       <div id="treeWrapper" style={{ width: "95%", height: "100vh" }}>
@@ -246,7 +348,13 @@ const RoadMap = () => {
               orientation={orientation}
               nodeSvgShape={{ shape: "circle", shapeProps: { r: 10 } }}
               pathFunc={pathFunc}
-              nodeSize={{ x: orientation === "horizontal" && pathFunc ==="step" ? 900: 500, y: 300 }}
+              nodeSize={{
+                x:
+                  orientation === "horizontal" && pathFunc === "step"
+                    ? 900
+                    : 500,
+                y: 300,
+              }}
               translate={{ x: 700, y: 100 }}
               allowForeignObjects={true}
               renderCustomNodeElement={(props) => (

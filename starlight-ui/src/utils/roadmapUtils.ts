@@ -70,6 +70,8 @@ export const updateNodeCompletion = (data, nodeName, isCompleted) => {
   });
 };
 
+
+
 export const orientationOptions = [
   { label: "Vertical", value: "vertical" },
   { label: "Horizontal", value: "horizontal" },

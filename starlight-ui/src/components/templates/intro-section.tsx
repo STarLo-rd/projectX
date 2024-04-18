@@ -76,7 +76,9 @@ const IntroSection: React.FC<IntroSectionProps> = ({
       </div>
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="animated-bg"></div>
+        <div className="animated-bg">
+          <div className="inner"></div>
+        </div>
       </div>
       <style>{`
         .animated-bg {
@@ -86,37 +88,86 @@ const IntroSection: React.FC<IntroSectionProps> = ({
           width: 100%;
           height: 100%;
           background: linear-gradient(to bottom, #fff, #fff 20%, #f0f0f0 80%, #fff 100%);
-          animation: animate 10s linear infinite;
+          overflow: hidden;
         }
 
-        .animated-bg::before {
+        .inner {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(45deg, #8BC6EC, #9599E2);
+          animation: animateBg 30s ease infinite;
+        }
+
+        .inner::before {
           content: '';
           position: absolute;
           top: 0;
-          left: 50%;
+          left: 0;
           width: 100%;
           height: 100%;
-          background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.733), transparent);
-          animation: animate 5s linear infinite;
+          background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8) 14.9%, transparent 15%),
+            radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6) 14.9%, transparent 15%),
+            radial-gradient(circle at 0% 100%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6) 14.9%, transparent 15%),
+            radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6) 14.9%, transparent 15%),
+            radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3) 29.9%, transparent 30%);
+          background-size: 400% 400%;
+          background-position: 0% 50%;
+          animation: animateBgRadials 10s ease infinite;
         }
 
-        .animated-bg::after {
+        .inner::after {
           content: '';
           position: absolute;
           top: 0;
-          left: 50%;
+          left: 0;
           width: 100%;
           height: 100%;
-          background: linear-gradient(to left, transparent, rgba(255, 255, 255, 0.733), transparent);
-          animation: animate 7s linear infinite;
+          background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0 10px, rgba(255, 255, 255, 0.2) 10px 20px);
+          animation: animateBgLines 15s linear infinite;
         }
 
-        @keyframes animate {
+        @keyframes animateBg {
           0% {
-            transform: translateX(-100%);
+            transform: rotate(0deg) scale(1);
+          }
+          50% {
+            transform: rotate(180deg) scale(1.5);
           }
           100% {
-            transform: translateX(100%);
+            transform: rotate(360deg) scale(1);
+          }
+        }
+
+        @keyframes animateBgRadials {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+
+        @keyframes animateBgLines {
+          0% {
+            transform: translate(0, 0) rotate(0deg);
+          }
+          25% {
+            transform: translate(50%, 50%) rotate(90deg);
+          }
+          50% {
+            transform: translate(0, 100%) rotate(180deg);
+          }
+          75% {
+            transform: translate(-50%, 50%) rotate(270deg);
+          }
+          100% {
+            transform: translate(0, 0) rotate(360deg);
           }
         }
       `}</style>

@@ -235,8 +235,8 @@ export default function AppShell() {
             </div>
           </div> */}
           <Content>
-            <div style={styles.section}>
-              <div style={styles.container} className="sku-panel_content">
+            <div>
+              <div>
                 <Outlet />
               </div>
             </div>
