@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Tree from "react-d3-tree";
 import NodeElement from "./node-element";
 import { useAuth } from "../../hooks/auth-context";
@@ -16,7 +16,9 @@ import {
   CloudDownloadOutlined,
   DeleteOutlined,
   InfoCircleOutlined,
+  LoadingOutlined,
   SaveOutlined,
+  UpCircleOutlined,
   VerticalAlignTopOutlined,
 } from "@ant-design/icons";
 import TreeSkeleton from "../../components/skeleton/tree-skeleton";
@@ -28,6 +30,7 @@ import {
   updateNodeCompletion,
 } from "../../utils/roadmapUtils";
 import CelebrationAnimation from "../../components/templates/celebration-animation";
+import { scrollToTop } from "../../utils/utils";
 
 const RoadMap = () => {
   const [myTreeData, setMyTreeData] = useState([]);
@@ -40,9 +43,19 @@ const RoadMap = () => {
   const [pathFunc, setPathFunc] = useState("step");
   const [completionPercent, setCompletionPercent] = useState(0);
   const [roadmaps, setRoadmaps] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [typedInterest, setTypedInterest] = useState(""); // For input field
   const [selectedInterest, setSelectedInterest] = useState(""); // For dropdown selection
+  const treeWrapperRef = useRef(null); // Reference to the tree wrapper for scrolling
+
+
+  const scrollToBottom = () => {
+    console.log("scroll to bttom")
+    if (treeWrapperRef.current) {
+      treeWrapperRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   // Handler for dropdown change
   const handleInterestChange = (selectedTitle) => {
@@ -142,8 +155,6 @@ const RoadMap = () => {
   useEffect(() => {
     if (myTreeData && myTreeData.length !== 0) {
       setShowHeading(false);
-      const percentage = calculateCompletionPercentage(myTreeData);
-      setCompletionPercent(percentage);
     } else {
       setShowHeading(true);
     }
@@ -159,18 +170,52 @@ const RoadMap = () => {
       setMyTreeData(data);
     }
   };
-
   const addRoadmap = async () => {
-    const data = await saveRoadmap(
-      user,
-      selectedInterest,
-      JSON.stringify(myTreeData)
+    setIsLoading(true); // Set loading to true when save starts
+    try {
+      const data = await saveRoadmap(
+        user,
+        selectedInterest,
+        JSON.stringify(myTreeData)
+      );
+      notification.success({
+        message: data.message,
+        duration: 10,
+      });
+      scrollToBottom();
+    } catch (error) {
+      notification.error({
+        message: "Failed to save the roadmap",
+        description: error.message,
+        duration: 10,
+      });
+      setIsLoading(false);
+    }
+    // Check if the interest is already in the roadmaps state
+    const exists = roadmaps.some(
+      (roadmap) => roadmap.title === selectedInterest
     );
-    notification.success({
-      message: data.message,
-      duration: 10,
-    });
+    if (exists) {
+      // Update the existing interest data
+      const updatedRoadmaps = roadmaps.map((roadmap) => {
+        if (roadmap.title === selectedInterest) {
+          return { ...roadmap, data: JSON.stringify(myTreeData) };
+        }
+        return roadmap;
+      });
+      setRoadmaps(updatedRoadmaps);
+    }
+
+    // Update selectedInterest if it's new to keep the UI in sync
+    setSelectedInterest(selectedInterest);
+    setIsLoading(false); // Set loading to false after save is complete
   };
+
+  useEffect(() => {
+    if (selectedInterest) {
+      scrollToBottom();
+    }
+  }, [selectedInterest]);
 
   const addChildNode = (parentNodeDatum, newNode) => {
     const updatedData = appendChildren(myTreeData, parentNodeDatum.name, [
@@ -232,12 +277,12 @@ const RoadMap = () => {
   };
 
   return (
-    <div className="m-auto">
+    <div className="m-auto bg-white">
       <>
         <FloatButton.Group
           trigger="click"
           type="default"
-          style={{ right: 20 }}
+          style={{ right: 15 }}
           icon={<InfoCircleOutlined />}
         >
           <FloatButton
@@ -255,8 +300,8 @@ const RoadMap = () => {
           />
           <FloatButton
             onClick={addRoadmap}
-            icon={<SaveOutlined />}
-            tooltip="save roadmap"
+            icon={isLoading ? <LoadingOutlined /> : <SaveOutlined />} // Change icon based on isLoading
+            tooltip={isLoading ? "Saving..." : "Save roadmap"} // Change tooltip text based on isLoading
           />
           <FloatButton
             onClick={handleDownload}
@@ -264,6 +309,14 @@ const RoadMap = () => {
             icon={<CloudDownloadOutlined />}
           />
         </FloatButton.Group>
+
+        <FloatButton
+          style={{ position: 'fixed', right: 65 }} // Positioning the button at the bottom right
+          onClick={scrollToTop}
+          icon={<UpCircleOutlined />}
+          tooltip="Scroll to top"
+        />
+    
       </>
       <IntroSection
         title="The Roadmap"
@@ -332,7 +385,7 @@ const RoadMap = () => {
         </Select>
       </div>
 
-      <div id="treeWrapper" style={{ width: "95%", height: "100vh" }}>
+      <div id="treeWrapper" ref={treeWrapperRef} style={{ width: "95%", height: "100vh" }}>
         <CelebrationAnimation
           completionPercentage={calculateCompletionPercentage(myTreeData)}
         />
@@ -349,13 +402,10 @@ const RoadMap = () => {
               nodeSvgShape={{ shape: "circle", shapeProps: { r: 10 } }}
               pathFunc={pathFunc}
               nodeSize={{
-                x:
-                  orientation === "horizontal" && pathFunc === "step"
-                    ? 900
-                    : 500,
+                x: 500,
                 y: 300,
               }}
-              translate={{ x: 700, y: 100 }}
+              translate={{ x: 600, y: 100 }}
               allowForeignObjects={true}
               renderCustomNodeElement={(props) => (
                 <NodeElement

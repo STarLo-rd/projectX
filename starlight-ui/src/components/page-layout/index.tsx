@@ -41,12 +41,16 @@ export default function AppShell() {
   const screens = useBreakpoint();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(true); // State to manage the collapse
   const showDrawer = () => {
     setOpen(true);
   };
   const onClose = () => {
     setOpen(false);
   };
+  useEffect(() => {
+    setCollapsed(true);
+  }, []);
 
   /**
    * Antblocks CSS
@@ -165,6 +169,8 @@ export default function AppShell() {
           theme="dark"
           breakpoint="lg"
           collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
         >
           <div className="flex flex-col justify-between h-full">
             <div>

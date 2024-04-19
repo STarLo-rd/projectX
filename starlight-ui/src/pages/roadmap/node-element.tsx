@@ -1,5 +1,5 @@
-import { PlusCircleOutlined } from "@ant-design/icons";
-import { Checkbox, Spin } from "antd";
+import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { Checkbox, Popconfirm, Spin } from "antd";
 import { useState } from "react";
 
 const NodeElement = ({
@@ -17,9 +17,8 @@ const NodeElement = ({
   const [newNodeDescription, setNewNodeDescription] = useState("");
   const hasChildren = nodeDatum.children && nodeDatum.children.length > 0;
 
-
   const handleAddChildNode = () => {
-    if (newNodeTitle.trim() !== "") {
+    if (newNodeTitle.trim() !== "" && newNodeDescription.trim() != "") {
       addChildNode(nodeDatum, {
         name: newNodeTitle.trim(),
         description: newNodeDescription.trim(),
@@ -32,24 +31,19 @@ const NodeElement = ({
 
   const handleClick = async () => {
     toggleNode();
-    if (nodeDatum.name && !hasChildren ) {
+    if (nodeDatum.name && !hasChildren) {
       setIsLoadingNode(true);
       await handleNodeClick(nodeDatum);
       setIsLoadingNode(false);
     }
   };
 
-
   return (
     <g>
       <circle
         r={10}
         fill={
-          nodeDatum.isCompleted
-            ? "#03c303"
-            : hasChildren
-            ? "orange"
-            : "black"
+          nodeDatum.isCompleted ? "#03c303" : hasChildren ? "orange" : "black"
         }
         onClick={handleClick}
       />
@@ -100,14 +94,18 @@ const NodeElement = ({
               )}
 
               {!hasChildren && (
-                <text
-                  x={10}
-                  y={5}
-                  className="text-red-700 ml-6"
-                  onClick={() => deleteNode(nodeDatum)}
+                <Popconfirm
+                  title="Confirm Deletion"
+                  description="Deleting this entry cannot be undone. Do you want to proceed?"
+                  onConfirm={() => deleteNode(nodeDatum)}
+                  okText="Yes"
+                  cancelText="No"
                 >
-                  Delete
-                </text>
+                  <DeleteOutlined
+                    className="text-red-700 ml-6"
+                    style={{ cursor: "pointer" }}
+                  />
+                </Popconfirm>
               )}
             </div>
           </div>
@@ -123,29 +121,31 @@ const NodeElement = ({
           )}
 
           {hasChildren && (
-            <div> 
-            <g transform="translate(0, 30)"  className="flex-col items-center">
-              <div className="flex items-center space-x-2 w-11/12">
-                <input
-                  type="text"
-                  value={newNodeTitle}
-                  onChange={(e) => setNewNodeTitle(e.target.value)}
-                  placeholder="Enter new node title"
-                  className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none"
-                />
-                <input
-                  type="text"
-                  value={newNodeDescription}
-                  onChange={(e) => setNewNodeDescription(e.target.value)}
-                  placeholder="Enter new node description"
-                  className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none"
-                />
+            <div>
+              <g transform="translate(0, 30)" className="flex-col items-center">
+                <div className="flex items-center space-x-2 w-11/12">
+                  <input
+                    type="text"
+                    value={newNodeTitle}
+                    onChange={(e) => setNewNodeTitle(e.target.value)}
+                    maxLength={70}
+                    placeholder="Enter new node title"
+                    className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none"
+                  />
+                  <input
+                    type="text"
+                    value={newNodeDescription}
+                    onChange={(e) => setNewNodeDescription(e.target.value)}
+                    placeholder="Enter new node description"
+                    className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none"
+                  />
 
-                <PlusCircleOutlined  className="text-green-600" onClick={handleAddChildNode} />
-              
-              </div>
-           
-            </g>
+                  <PlusCircleOutlined
+                    className="text-green-600"
+                    onClick={handleAddChildNode}
+                  />
+                </div>
+              </g>
             </div>
           )}
         </foreignObject>
