@@ -41,7 +41,6 @@ const RoadMap = () => {
   const [loading, setLoading] = useState(false);
   const [orientation, setOrientation] = useState("vertical");
   const [pathFunc, setPathFunc] = useState("step");
-  const [completionPercent, setCompletionPercent] = useState(0);
   const [roadmaps, setRoadmaps] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -51,7 +50,6 @@ const RoadMap = () => {
 
 
   const scrollToBottom = () => {
-    console.log("scroll to bttom")
     if (treeWrapperRef.current) {
       treeWrapperRef.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -282,7 +280,8 @@ const RoadMap = () => {
         <FloatButton.Group
           trigger="click"
           type="default"
-          style={{ right: 15 }}
+          // style={{ right: 15 }}
+          style={{ position: "fixed", bottom: 15, right: 15, zIndex: 999 }} // Adjust position to bottom right
           icon={<InfoCircleOutlined />}
         >
           <FloatButton
@@ -311,7 +310,8 @@ const RoadMap = () => {
         </FloatButton.Group>
 
         <FloatButton
-          style={{ position: 'fixed', right: 65 }} // Positioning the button at the bottom right
+          style={{ position: "fixed", bottom: 70, right: 15, zIndex: 999 }} // Adjust position to bottom right
+          // style={{ position: 'fixed', right: 65 }} // Positioning the button at the bottom right
           onClick={scrollToTop}
           icon={<UpCircleOutlined />}
           tooltip="Scroll to top"
@@ -319,7 +319,7 @@ const RoadMap = () => {
     
       </>
       <IntroSection
-        title="The Roadmap"
+        title="AI Pathfinder"
         description="Our vision for the future. The features we're working on. The progress we've made."
         placeholder="enter your interest"
         value={typedInterest}

@@ -63,8 +63,7 @@ const IntroSection: React.FC<IntroSectionProps> = ({
             onChange={(e) => onChange(e.target.value)}
             onPressEnter={onSubmit}
             onKeyDown={handleKeyDown}
-            style={{ width: "400px", overflow: "hidden" }}
-          />
+            style={{ width: "100%", minWidth: "300px", maxWidth: "100%", overflow: "hidden" }}          />
           <button
             type="submit"
             className="absolute right-2 bottom-2 bg-transparent hover:bg-gray-200 rounded-full p-1 text-gray-600"

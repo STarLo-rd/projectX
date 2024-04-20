@@ -3,6 +3,7 @@ import ExplainTopic from "./pages/explain-topic";
 import Login from "./pages/login";
 import News from "./pages/news";
 import Roadmaps from "./pages/roadmap";
+import SignUp from "./pages/signup";
 import UserProfileForm from "./pages/user-profile/userprofile-form";
 
 export const authRoutes = [
@@ -48,5 +49,10 @@ export const unAuthRoutes = [
     path: "/login",
     id: "login",
     element: <Login />,
+  },
+  {
+    path: "/signup",
+    id: "signup",
+    element: <SignUp />,
   },
 ];

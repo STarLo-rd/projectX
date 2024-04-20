@@ -165,10 +165,11 @@ export default function AppShell() {
             left: 0,
             background: "black",
           }}
-          width={250}
+          width={screens.md ? 250 : 80} // Set the width based on screen size
           theme="dark"
           breakpoint="lg"
           collapsible
+          collapsedWidth={screens.md ? 80 : 0} // Set the collapsed width based on screen size
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
         >

@@ -7,6 +7,7 @@ import {
   homeUrl,
   loginUrl,
   NOTIFY_DURATION,
+  signupUrl,
   TOKEN,
 } from "../constants/constant-values";
 import authService, { refreshToken } from "./authentication";
@@ -43,7 +44,7 @@ AxiosInstance.interceptors.request.use(
     if (
       isTokenExpired(token) &&
       token &&
-      window.location.pathname !== loginUrl
+     ( window.location.pathname !== loginUrl && window.location.pathname !== signupUrl )
     ) {
       if (!isNotificationShown) {
         isNotificationShown = true;

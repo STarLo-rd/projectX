@@ -2,6 +2,12 @@ import { CollectionConfig } from 'payload/types'
 
 const Users: CollectionConfig = {
   slug: 'users',
+  access: {
+    read: () => true,
+    create: ()=>true,
+    update: ()=>true,
+    delete: ()=>true,
+  },
   auth: {
     useAPIKey: true,
     tokenExpiration: 3600,
