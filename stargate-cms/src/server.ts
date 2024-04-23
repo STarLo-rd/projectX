@@ -5,8 +5,7 @@ import roadmapRouter from "./routes/roadmap";
 import explainRouter from "./routes/explainTopic";
 import nodemailer from "nodemailer";
 import mg from "nodemailer-mailgun-transport";
-import { checkCredits } from "./routes/middleware";
-import './scheduled-tasks'; // This will automatically schedule your tasks when the server starts
+import "./scheduled-tasks"; // This will automatically schedule your tasks when the server starts
 require("dotenv").config();
 const app = express();
 
@@ -18,7 +17,6 @@ app.get("/", (_, res) => {
 app.use(express.json({ limit: "50mb" }));
 // app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-
 // Mailgun Auth configuration
 const mailgunAuth: mg.Options = {
   auth: {
@@ -27,7 +25,6 @@ const mailgunAuth: mg.Options = {
   },
 };
 const transport = nodemailer.createTransport(mg(mailgunAuth));
-
 
 app.use(
   cors({
@@ -47,7 +44,6 @@ app.use(
 //     console.error('Error connecting to MongoDB:', error.message);
 //   });
 
-
 payload.init({
   secret: process.env.PAYLOAD_SECRET,
   express: app,
@@ -61,11 +57,10 @@ payload.init({
   },
 });
 
-
 async function main() {
   // send mail with defined transport object
   const info = await transport.sendMail({
-    from: 'starlord.learn@gmail.com', // sender address
+    from: "starlord.learn@gmail.com", // sender address
     to: "starlordclar@gmail.com", // list of receivers
     subject: "Hello ✔", // Subject line
     text: "Hello world?", // plain text body
@@ -78,10 +73,7 @@ async function main() {
 
 main().catch(console.error);
 
-
-
 // app.use("/api/user", profileRouter);
-
 
 // app.use("/api/user", profileRouter);
 app.use("/api/roadmap", roadmapRouter);

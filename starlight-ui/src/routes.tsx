@@ -1,5 +1,6 @@
 import Dashboard from "./pages/dashboard";
 import ExplainTopic from "./pages/explain-topic";
+import Home from "./pages/home";
 import Login from "./pages/login";
 import News from "./pages/news";
 import Roadmaps from "./pages/roadmap";
@@ -37,11 +38,11 @@ export const authRoutes = [
     element: <ExplainTopic />,
     breadcrumbName: "explain-topic",
   },
-  // {
-  //     path: "/",
-  //     element: <Dashboard />,
-  //     breadcrumbName: "Home",
-  // },
+  {
+      path: "/home",
+      element: <Home />,
+      breadcrumbName: "Home",
+  },
 ];
 
 export const unAuthRoutes = [

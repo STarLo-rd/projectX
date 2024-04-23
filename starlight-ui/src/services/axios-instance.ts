@@ -37,6 +37,7 @@ const isTokenExpired = (token: string): boolean => {
 AxiosInstance.interceptors.request.use(
   async (config) => {
     const token = localStorage.getItem(TOKEN) || "";
+    if (!token) return config;
     if (apiUrls.includes(config.url as string)) {
       return config;
     }
@@ -44,7 +45,8 @@ AxiosInstance.interceptors.request.use(
     if (
       isTokenExpired(token) &&
       token &&
-     ( window.location.pathname !== loginUrl && window.location.pathname !== signupUrl )
+      window.location.pathname !== loginUrl &&
+      window.location.pathname !== signupUrl
     ) {
       if (!isNotificationShown) {
         isNotificationShown = true;
@@ -60,7 +62,7 @@ AxiosInstance.interceptors.request.use(
       // Token is about to expire, refresh it
       const { exp } = jwtDecode<DecodedToken>(token || "");
       const timeLeft = exp * 1000 - Date.now();
-      if (timeLeft < 300000 && timeLeft > 0 ) {
+      if (timeLeft < 300000 && timeLeft > 0) {
         // Less than 5 minutes remaining
         try {
           const { refreshedToken } = await refreshToken();

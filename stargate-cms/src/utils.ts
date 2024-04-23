@@ -1,5 +1,5 @@
 // #src/utils/findUser.js
-import payload from 'payload';
+import payload from "payload";
 
 /**
  * Finds a user by ID and collection name using Payload CMS.
@@ -13,8 +13,8 @@ const findUser = async ({ _id, collection }) => {
       collection,
       where: {
         id: {
-          equals: _id
-        }
+          equals: _id,
+        },
       },
       limit: 1,
     });
@@ -22,17 +22,16 @@ const findUser = async ({ _id, collection }) => {
     if (user && user.docs.length > 0) {
       return user.docs[0];
     } else {
-      console.error(`No user found with ID '${_id}' in collection '${collection}'.`);
+      console.error(
+        `No user found with ID '${_id}' in collection '${collection}'.`
+      );
       return null;
     }
   } catch (error) {
-    console.error('Error finding user:', error);
+    console.error("Error finding user:", error);
     return null;
   }
 };
-
-
-
 
 /**
  * Deducts credits from the user's account.
@@ -44,11 +43,11 @@ const deductCredits = async (userId, amount) => {
   try {
     // Fetch the current user to check the available credits
     const currentUser = await payload.find({
-      collection: 'users',
+      collection: "users",
       where: {
         id: {
-          equals: userId
-        }
+          equals: userId,
+        },
       },
       limit: 1,
     });
@@ -65,19 +64,19 @@ const deductCredits = async (userId, amount) => {
     }
 
     // Update the user's credits
-    await payload.update({
-      collection: 'users',
+    const result = await payload.update({
+      collection: "users",
       id: userId,
       data: {
-        credits: user.credits - amount
+        credits: user.credits - amount,
       },
     });
 
     return true;
   } catch (error) {
-    console.error('Error deducting credits:', error);
+    console.error("Error deducting credits:", error);
     return false;
   }
 };
 
-export  {findUser, deductCredits};
+export { findUser, deductCredits };

@@ -26,7 +26,6 @@ const checkCredits = async (
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(" ")[1];
-    console.log("token", token);
 
     if (!token) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -34,14 +33,12 @@ const checkCredits = async (
 
     // Verify and decode the JWT token
     const decoded = jwt.decode(token);
-    console.log("decoded", decoded);
 
     // Find the user based on the decoded token information
     const user = await findUser({
       _id: decoded.id,
       collection: decoded.collection,
     });
-    console.log("available", user.credits);
 
     if (!user || user.credits < 1) {
       return res.status(402).json({ error: "Insufficient credits" });

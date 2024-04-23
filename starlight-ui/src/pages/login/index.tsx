@@ -18,6 +18,7 @@ const Login = () => {
   if (auth.user && auth.user.email) {
     return <Navigate to="/" />;
   }
+
   const onFinish = async (values: any) => {
     if (loginAvailable) {
       setLoginAvailable(false);
