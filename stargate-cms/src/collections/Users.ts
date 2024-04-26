@@ -1,4 +1,5 @@
 import { CollectionConfig } from "payload/types";
+import { sendVerificationEmail } from "./email";
 
 const Users: CollectionConfig = {
   slug: "users",
@@ -13,18 +14,11 @@ const Users: CollectionConfig = {
     tokenExpiration: 3600,
     maxLoginAttempts: 5,
     lockTime: 24 * 60 * 60 * 1000,
-
+    // verify: true,
     cookies: {
       secure: true,
       sameSite: "strict",
     },
-    // verify: {
-    //   generateEmailHTML: generateVerifyEmailHTML,
-    //   generateEmailSubject: generateVerifyEmailSubject,
-    // },
-    // forgotPassword: {
-    //   generateEmailHTML: generateForgotPasswordEmailHTML,
-    // },
   },
   admin: {
     useAsTitle: "email",
@@ -32,6 +26,11 @@ const Users: CollectionConfig = {
   hooks: {
     beforeChange: [
       async ({ data, operation, req }) => {
+        if (operation === "create") {
+          // Send verification email to the new user
+          // await sendVerificationEmail(data);
+        }
+
         const { role, credits } = data;
         const isCreate = operation === "create";
         const isUpdate = operation === "update";
@@ -54,7 +53,6 @@ const Users: CollectionConfig = {
           }
         } else if (isUpdate && user.role) {
           // Update credits based on new role when role changes
-          console.log("called from 58");
           switch (role) {
             case "guest":
               data.credits = 10;

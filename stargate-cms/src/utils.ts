@@ -57,6 +57,7 @@ const deductCredits = async (userId, amount) => {
       return false;
     }
 
+    console.log("61", currentUser);
     const user = currentUser.docs[0];
     if (user.credits < amount) {
       console.error(`Insufficient credits for user ID '${userId}'.`);
@@ -71,6 +72,7 @@ const deductCredits = async (userId, amount) => {
         credits: user.credits - amount,
       },
     });
+
 
     return true;
   } catch (error) {

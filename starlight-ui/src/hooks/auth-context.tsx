@@ -15,6 +15,7 @@ interface AuthContextType {
   handleToggle: (checked: any) => any;
   setCurrentUser: () => Promise<void>;
   login: (email: string, password: string) => Promise<IUserAuthInfo>;
+  loginSSO: (ssoToken) => Promise<IUserAuthInfo>;
   sendResetRequest: (email: string) => any;
   verifyResetToken: (token: string) => any;
   resetPassword: (data: IChangePasswordInfo) => any;
@@ -60,6 +61,15 @@ export function AuthProvider({
 
   const login = async (email: string, password: string) => {
     const res = await authService.login(email, password);
+    if (res.token) {
+      authService.setAccessToken(res.token);
+      await setCurrentUser();
+    }
+    return res;
+  };
+
+  const loginSSO = async (ssoToken) => {
+    const res = await authService.loginSSO(ssoToken);
     if (res.token) {
       authService.setAccessToken(res.token);
       await setCurrentUser();
@@ -121,6 +131,7 @@ export function AuthProvider({
     user,
     setCurrentUser,
     login,
+    loginSSO,
     logout,
     sendResetRequest,
     verifyResetToken,

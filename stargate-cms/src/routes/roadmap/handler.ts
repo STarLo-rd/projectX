@@ -13,6 +13,7 @@ const generateRoadmap: RequestHandler<DefaultParams, any, any> = async (
   _next
 ) => {
   try {
+    console.log("called")
     console.log(req.user.id)
     const deductionSuccessful = await deductCredits(req.user.id, 1); // Deduct 1 credit
 

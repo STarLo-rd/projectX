@@ -6,6 +6,7 @@ import { Form, Input, Button, notification } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useAuth } from "../../hooks/auth-context";
 import useDocumentTitle from "../../hooks/use-document-title";
+import Signup from "../signup";
 
 const Login = () => {
   // useMetaVersion("1.0");
@@ -117,6 +118,7 @@ const Login = () => {
                 </Button>
               </Form.Item>
             </div>
+            <Signup />
           </Form>
         </div>
       </main>

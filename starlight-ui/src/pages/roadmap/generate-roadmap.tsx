@@ -8,7 +8,14 @@ import {
   getUserRoadmap,
   saveRoadmap,
 } from "../../services/roadmap";
-import { Button, FloatButton, notification, Progress, Select } from "antd";
+import {
+  Button,
+  FloatButton,
+  notification,
+  Progress,
+  Select,
+  Skeleton,
+} from "antd";
 import "./roadmap.css";
 import IntroSection from "../../components/templates/intro-section";
 import {
@@ -47,7 +54,6 @@ const RoadMap = () => {
   const [typedInterest, setTypedInterest] = useState(""); // For input field
   const [selectedInterest, setSelectedInterest] = useState(""); // For dropdown selection
   const treeWrapperRef = useRef(null); // Reference to the tree wrapper for scrolling
-
 
   const scrollToBottom = () => {
     if (treeWrapperRef.current) {
@@ -134,6 +140,7 @@ const RoadMap = () => {
 
   const fetchRoadmaps = async () => {
     setLoading(true);
+    console.log(user.email);
     const roadmapData = await getUserRoadmap(user.email);
     setLoading(false);
     if (roadmapData && roadmapData.interests) {
@@ -147,6 +154,7 @@ const RoadMap = () => {
 
   // Load interests on component mount
   useEffect(() => {
+    console.log("caleld");
     fetchRoadmaps();
   }, [user]);
 
@@ -161,6 +169,7 @@ const RoadMap = () => {
   // Handler for submitting a new interest
   const handleRoadmap = async () => {
     setLoading(true);
+    console.log(typedInterest);
     const data = await generateRoadmap(typedInterest);
     setSelectedInterest(typedInterest);
     setLoading(false);
@@ -310,13 +319,12 @@ const RoadMap = () => {
         </FloatButton.Group>
 
         <FloatButton
-          style={{ position: "fixed", bottom: 70, right: 15, zIndex: 999 }} // Adjust position to bottom right
+          style={{ position: "fixed", bottom: 15, right: 70, zIndex: 999 }} // Adjust position to bottom right
           // style={{ position: 'fixed', right: 65 }} // Positioning the button at the bottom right
           onClick={scrollToTop}
           icon={<UpCircleOutlined />}
           tooltip="Scroll to top"
         />
-    
       </>
       <IntroSection
         title="AI Pathfinder"
@@ -385,39 +393,46 @@ const RoadMap = () => {
         </Select>
       </div>
 
-      <div id="treeWrapper" ref={treeWrapperRef} style={{ width: "95%", height: "100vh" }}>
+      <div
+        id="treeWrapper"
+        ref={treeWrapperRef}
+        style={{ width: "93%", height: "100vh" }}
+      >
         <CelebrationAnimation
           completionPercentage={calculateCompletionPercentage(myTreeData)}
         />
         {loading ? (
           // Render loading skeleton when loading
-          // <Skeleton active />
-          <TreeSkeleton />
+          <div className="my-6">
+            <TreeSkeleton />
+          </div>
         ) : (
           myTreeData &&
           myTreeData?.length > 0 && ( // Render tree if data is available
-            <Tree
-              data={myTreeData}
-              orientation={orientation}
-              nodeSvgShape={{ shape: "circle", shapeProps: { r: 10 } }}
-              pathFunc={pathFunc}
-              nodeSize={{
-                x: 500,
-                y: 300,
-              }}
-              translate={{ x: 600, y: 100 }}
-              allowForeignObjects={true}
-              renderCustomNodeElement={(props) => (
-                <NodeElement
-                  {...props}
-                  handleNodeClick={handleNodeClick}
-                  selectedNode={selectedNode}
-                  updateCompletionStatus={updateCompletionStatus}
-                  addChildNode={addChildNode}
-                  deleteNode={deleteNode}
-                />
-              )}
-            />
+            <>
+              <Tree
+                data={myTreeData}
+                orientation={orientation}
+                nodeSvgShape={{ shape: "circle", shapeProps: { r: 10 } }}
+                pathFunc={pathFunc}
+                nodeSize={{
+                  x: 500,
+                  y: 300,
+                }}
+                translate={{ x: 600, y: 100 }}
+                allowForeignObjects={true}
+                renderCustomNodeElement={(props) => (
+                  <NodeElement
+                    {...props}
+                    handleNodeClick={handleNodeClick}
+                    selectedNode={selectedNode}
+                    updateCompletionStatus={updateCompletionStatus}
+                    addChildNode={addChildNode}
+                    deleteNode={deleteNode}
+                  />
+                )}
+              />
+            </>
           )
         )}
       </div>

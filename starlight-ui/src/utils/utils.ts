@@ -1,8 +1,8 @@
 import { TOKEN } from "../constants/constant-values";
+import { useState, useEffect } from "react";
 
 export const getAuthorizationHeader = () => {
   const token = localStorage.getItem(TOKEN);
-  console.log(token);
   if (!token) {
     throw new Error("Could not find access token");
   }
@@ -18,11 +18,3 @@ export const scrollToTop = () => {
     behavior: "smooth", // Smooth scroll
   });
 };
-
-// // Function to scroll to the bottom of the page smoothly
-// export const scrollToBottom = () => {
-//   window.scrollTo({
-//     bottom: 0,
-//     behavior: "smooth", // Smooth scroll
-//   });
-// };

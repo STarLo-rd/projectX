@@ -38,6 +38,7 @@ async function getUserRoadmap(userEmail: string): Promise<RoadmapData | null> {
     if (data.docs && data.docs.length > 0) {
       return data.docs[0];
     }
+    console.log(data.docs[0])
     return null;
   } catch (error) {
     handleRequestError(error);
@@ -102,11 +103,19 @@ async function deleteRoadmapInterest(userEmail: string, interestTitle: string): 
 
     console.log(updatedInterests)
     // Update the roadmap with the new interests array
-    const updateResponse = await AxiosInstance.patch(`/roadmaps/${roadmap.id}`, {
-      interests: updatedInterests
-    }, {
-      headers: getAuthorizationHeader(),
-    });
+    let updateResponse;
+    if(updatedInterests.length == 0){
+      updateResponse = await AxiosInstance.delete(`/roadmaps/${roadmap.id}`, {
+        headers: getAuthorizationHeader()
+      }) 
+    }else{
+       updateResponse = await AxiosInstance.patch(`/roadmaps/${roadmap.id}`, {
+        interests: updatedInterests
+      }, {
+        headers: getAuthorizationHeader(),
+      });
+    }
+   
 
     notification.success({ message: 'Interest deleted successfully' });
     return updateResponse.data;

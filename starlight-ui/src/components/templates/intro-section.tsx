@@ -25,7 +25,7 @@ const IntroSection: React.FC<IntroSectionProps> = ({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
-      onSubmit();
+      onSubmit;
       if (textAreaRef.current) {
         textAreaRef.current.blur(); // Remove focus from the input field
       }
