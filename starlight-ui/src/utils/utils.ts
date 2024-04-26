@@ -1,5 +1,4 @@
 import { TOKEN } from "../constants/constant-values";
-import { useState, useEffect } from "react";
 
 export const getAuthorizationHeader = () => {
   const token = localStorage.getItem(TOKEN);

@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
-import { Typography, Form, Input } from "antd";
-import { ArrowRightOutlined } from "@ant-design/icons";
+import { Typography, Form, Input, Spin } from "antd";
+import { ArrowRightOutlined, LoadingOutlined } from "@ant-design/icons";
 
 interface IntroSectionProps {
   title: string;
@@ -10,6 +10,7 @@ interface IntroSectionProps {
   onChange: (value: string) => void;
   onSubmit: () => void;
   showHeading: boolean;
+  isLoading: boolean;
 }
 
 const IntroSection: React.FC<IntroSectionProps> = ({
@@ -20,6 +21,7 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   onChange,
   onSubmit,
   showHeading,
+  isLoading,
 }) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -63,13 +65,25 @@ const IntroSection: React.FC<IntroSectionProps> = ({
             onChange={(e) => onChange(e.target.value)}
             onPressEnter={onSubmit}
             onKeyDown={handleKeyDown}
-            style={{ width: "100%", minWidth: "300px", maxWidth: "100%", overflow: "hidden" }}          />
+            style={{
+              width: "100%",
+              minWidth: "300px",
+              maxWidth: "100%",
+              overflow: "hidden",
+            }}
+          />
           <button
             type="submit"
             className="absolute right-2 bottom-2 bg-transparent hover:bg-gray-200 rounded-full p-1 text-gray-600"
             onClick={onSubmit}
           >
-            <ArrowRightOutlined className="h-5 w-5 text-gray-600" />
+            {isLoading ? (
+              <Spin
+                indicator={<LoadingOutlined style={{ fontSize: 16 }} spin />}
+              />
+            ) : (
+              <ArrowRightOutlined className="h-5 w-5 text-gray-600" />
+            )}
           </button>
         </Form>
       </div>

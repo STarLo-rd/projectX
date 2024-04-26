@@ -154,7 +154,6 @@ const RoadMap = () => {
 
   // Load interests on component mount
   useEffect(() => {
-    console.log("caleld");
     fetchRoadmaps();
   }, [user]);
 
@@ -335,9 +334,10 @@ const RoadMap = () => {
         // onSubmit={() => handleRoadmap(interest)}
         onSubmit={handleRoadmap}
         showHeading={showHeading}
+        isLoading={loading}
       />
 
-      <div className="App bg-white shadow-lg rounded-xl p-6 w-4/5 m-auto mt-8">
+      <div className="App bg-white shadow-lg rounded-xl p-6 w-4/5 m-auto mt-8 flex-col">
         <Progress
           className="w-full"
           percent={Math.round(calculateCompletionPercentage(myTreeData))}
@@ -353,7 +353,7 @@ const RoadMap = () => {
           {completionMessage(calculateCompletionPercentage(myTreeData))}
         </p>
         <Select
-          className="w-full max-w-md mx-auto my-4"
+          className="max-w-md mx-auto my-4"
           value={selectedInterest}
           onChange={handleInterestChange}
           placeholder="Select an interest"
