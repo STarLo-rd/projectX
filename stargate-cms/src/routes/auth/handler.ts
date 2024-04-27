@@ -25,7 +25,6 @@ export const SSOLogin: RequestHandler<DefaultParams, any, any> = async (
       },
     });
 
-    console.log(users);
 
     if (users.length === 0) {
       return res.status(404).json({ error: "User not found" });
@@ -33,7 +32,6 @@ export const SSOLogin: RequestHandler<DefaultParams, any, any> = async (
 
     const user = users[0];
 
-    console.log(process.env.PAYLOAD_SECRET);
 
     // Generate a JWT token with a 12-hour expiration time
     const token = jwt.sign(

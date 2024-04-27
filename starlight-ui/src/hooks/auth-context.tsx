@@ -10,6 +10,7 @@ import darkImage from "../images/image.png";
 import lightImage from "../images/image.png";
 interface AuthContextType {
   user: CurrentUser;
+  credit: number;
   isDarkMode: any;
   currentImage: any;
   handleToggle: (checked: any) => any;
@@ -25,6 +26,7 @@ interface AuthContextType {
   sendRequestAccount: (data: any) => any;
   getUserById: (id: string) => any;
   changeUserPassword: (data: IResetPasswordInfo) => any;
+  deduceCredit:any;
 }
 
 /**
@@ -45,6 +47,7 @@ export function AuthProvider({
   children: React.ReactNode;
 }): JSX.Element {
   const [user, setUser] = useState<CurrentUser>({} as CurrentUser);
+  const [credit, setCredit] = useState<number>(0);
   const [isDarkMode, setIsDarkMode] = useState<any>(false);
   const [currentImage, setCurrentImage] = useState<any>(
     isDarkMode ? darkImage : lightImage
@@ -105,6 +108,12 @@ export function AuthProvider({
   const setCurrentUser = async () => {
     const userData = await getCurrentUser();
     setUser(userData?.user);
+    setCredit(userData?.user?.credits || 0);
+  };
+
+  const deduceCredit = async (deducedValue: number) => {
+    const updatedCredit = credit - deducedValue;
+    setCredit(updatedCredit);
   };
 
   const sendRequestAccount = async (data: any) => {
@@ -130,6 +139,8 @@ export function AuthProvider({
   const value = {
     user,
     setCurrentUser,
+    credit,
+    deduceCredit,
     login,
     loginSSO,
     logout,

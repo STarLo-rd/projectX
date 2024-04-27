@@ -2,7 +2,6 @@ import { Resend } from "resend";
 const resend = new Resend("re_XWXXF5Lm_9kdoTLM6CBJ24Nhn7aZPBQP6");
 
 const sendVerificationEmail = async (userData) => {
-  console.log(userData)
   const { email } = userData;
 
   try {

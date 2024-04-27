@@ -7,10 +7,7 @@ import "./scheduled-tasks"; // This will automatically schedule your tasks when 
 import dreamAnalysisRouter from "./routes/dreamAnalysis";
 require("dotenv").config();
 const app = express();
-import { Resend } from "resend";
 import authRouter from "./routes/auth";
-// const resend = new Resend("re_XWXXF5Lm_9kdoTLM6CBJ24Nhn7aZPBQP6");
-import jwt from "jsonwebtoken";
 
 // Redirect root to Admin panel
 app.get("/", (_, res) => {

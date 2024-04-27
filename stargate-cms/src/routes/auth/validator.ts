@@ -16,10 +16,8 @@ const validateSSOToken = async (ssoToken) => {
       audience: CLIENT_ID,
     });
 
-    console.log("ticket", ticket);
     // Get the payload from the verified token
     const payload = ticket.getPayload();
-    console.log(payload);
 
     // Return the user information from the payload
     return payload;

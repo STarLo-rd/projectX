@@ -53,6 +53,8 @@ const Users: CollectionConfig = {
           }
         } else if (isUpdate && user.role) {
           // Update credits based on new role when role changes
+          console.log("called from here")
+          console.log(user.role)
           switch (role) {
             case "guest":
               data.credits = 10;

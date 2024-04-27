@@ -22,7 +22,6 @@ const addUserDetails: RequestHandler<DefaultParams, any, any> = async (
 ) => {
     try {
         const { user, data } = req.body as { user: string; data: UserProfileData };
-        console.log(user, data);
 
         // Check if a user profile already exists for the provided user ID
         const existingProfile = await payload.find({

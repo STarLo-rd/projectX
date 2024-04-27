@@ -1,5 +1,5 @@
 import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Checkbox, Popconfirm, Spin } from "antd";
+import { Alert, Checkbox, message, Popconfirm, Spin } from "antd";
 import { useState } from "react";
 
 const NodeElement = ({
@@ -10,6 +10,7 @@ const NodeElement = ({
   updateCompletionStatus,
   addChildNode,
   deleteNode,
+  controlledLoading,
 }) => {
   const [isLoadingNode, setIsLoadingNode] = useState(false);
 
@@ -50,8 +51,15 @@ const NodeElement = ({
       <text
         fill="black"
         strokeWidth="0.7"
+        // className="animated-text"
         x={15}
-        onClick={handleClick}
+        onClick={() =>
+          !controlledLoading
+            ? handleClick()
+            : message.info(
+                "Please wait while we process your previous request."
+              )
+        }
         style={{
           textDecoration: nodeDatum.isCompleted ? "line-through" : "none",
         }}

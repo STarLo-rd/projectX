@@ -14,6 +14,7 @@ import {
   Typography,
   Image,
   notification,
+  Progress,
 } from "antd";
 import {
   LogoutOutlined,
@@ -30,6 +31,8 @@ import {
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useStyles } from "./styles";
 import { authRoutes } from "../../routes";
+import { useAuth } from "../../hooks/auth-context";
+import { useMediaQuery } from "antd";
 
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
@@ -41,6 +44,7 @@ export default function AppShell() {
   const screens = useBreakpoint();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const { user, credit } = useAuth();
   const [collapsed, setCollapsed] = useState(true); // State to manage the collapse
   const showDrawer = () => {
     setOpen(true);
@@ -129,6 +133,7 @@ export default function AppShell() {
       ),
     };
   });
+  const mobileMenuItems = items.concat(profileMenuItems);
 
   const menus = (
     <>
@@ -186,6 +191,26 @@ export default function AppShell() {
               {menus}
             </div>
             <div className="p-4">
+              <div>
+                <div className="flex flex-col items-center">
+                  {user && (
+                    <div className="text-center w-full">
+                      <h3 className="text-lg font-bold mb-2">star ai</h3>
+
+                      <div className="p-1.5">
+                        <div className="flex flex-wrap justify-around">
+                          <p className="text-gray-500 mb-1">credit remaining</p>
+                          <p>{credit}</p>
+                        </div>
+                        <Progress
+                          percent={(credit / 200) * 100}
+                          strokeColor={{ from: "#108ee9", to: "#87d068" }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
               <Menu
                 theme="dark"
                 mode="inline"
@@ -211,7 +236,33 @@ export default function AppShell() {
                 onClose={onClose}
                 open={open}
               >
-                {menus}
+                <Menu
+                  theme={screens.sm ? "dark" : "light"}
+                  mode="inline"
+                  style={styles.navMenu}
+                  items={mobileMenuItems}
+                  onClick={onClose}
+                />
+                 <div>
+                <div className="flex flex-col items-center">
+                  {user && (
+                    <div className="text-center w-full">
+                      <h3 className="text-lg font-bold mb-2">star ai</h3>
+
+                      <div className="p-1.5">
+                        <div className="flex flex-wrap justify-around">
+                          <p className="text-gray-500 mb-1">credit remaining</p>
+                          <p>{credit}</p>
+                        </div>
+                        <Progress
+                          percent={(credit / 200) * 100}
+                          strokeColor={{ from: "#108ee9", to: "#87d068" }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
               </Drawer>
             </div>
           </div>

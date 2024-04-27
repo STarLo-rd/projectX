@@ -4,7 +4,6 @@ import { User } from "payload/dist/auth";
 import jwt from "jsonwebtoken";
 import {findUser} from "../utils";
 const isUser: Access<any, User> = ({ req: { user } }) => {
-  console.log(user, user.collection)
   return user && user.collection === "users";
 };
 const accessControl = (
@@ -12,11 +11,9 @@ const accessControl = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log('accessControl')
   if (!isUser({ req })) {
     return res.status(401).send({ error: "Unauthorized" });
   }
-  console.log(req.user);
   res.locals["user"] = req.user;
   next();
 };
