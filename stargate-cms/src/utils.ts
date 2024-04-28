@@ -68,7 +68,7 @@ const deductCredits = async (userId, amount) => {
       collection: "users",
       id: userId,
       data: {
-        credits: user.credits - amount,
+        credits: Number(user.credits) - amount,
       },
     });
 

@@ -6,11 +6,23 @@ import axios from "axios";
 import { HfInference } from "@huggingface/inference";
 const genAI = new GoogleGenerativeAI("AIzaSyBWABGD2ryXU63Y7qHhKEEC1SMaaIlaBIM"); // Replace "YOUR_API_KEY" with your actual API key
 
+
+interface WikipediaResponse {
+  query: {
+    pages: {
+      [key: string]: {
+        extract?: string;
+      };
+    };
+  };
+}
+
+
 // Implement your logic for task decomposition, context framing, analogy finding, and example finding
 async function decomposeComplexTopic(complexTopic) {
   try {
     // Example implementation using Wikipedia API for task decomposition
-    const wikipediaResponse = await axios.get(
+    const wikipediaResponse = await axios.get<WikipediaResponse>(
       `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&redirects=1&titles=${encodeURIComponent(
         complexTopic
       )}&format=json`
@@ -18,8 +30,8 @@ async function decomposeComplexTopic(complexTopic) {
     const pages = wikipediaResponse.data.query.pages;
     const page = Object.values(pages)[0];
 
-    if (page.extract) {
-      const extract = page.extract;
+    if (page && page?.extract) {
+      const extract = page?.extract;
       const sentences = extract.match(/\(?[^\.!\?]+[\.!\?]\)?/g);
       const subtopics = sentences.map((sentence) => sentence.trim());
       return subtopics;
@@ -35,7 +47,7 @@ async function decomposeComplexTopic(complexTopic) {
 async function getContextualInfo(complexTopic) {
   try {
     // Example implementation using Wikipedia API for context framing
-    const wikipediaResponse = await axios.get(
+    const wikipediaResponse = await axios.get<WikipediaResponse>(
       `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&redirects=1&titles=${encodeURIComponent(
         complexTopic
       )}&format=json`
@@ -43,7 +55,7 @@ async function getContextualInfo(complexTopic) {
     const pages = wikipediaResponse.data.query.pages;
     const page = Object.values(pages)[0];
 
-    if (page.extract) {
+    if (page && page?.extract) {
       return page.extract;
     } else {
       return `No contextual information found for "${complexTopic}"`;
@@ -78,7 +90,7 @@ async function findAppropriateAnalogy(complexTopic) {
 async function findRelevantExample(complexTopic) {
   try {
     // Example implementation using Wikipedia API for finding relevant examples
-    const wikipediaResponse = await axios.get(
+    const wikipediaResponse = await axios.get<WikipediaResponse>(
       `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&redirects=1&titles=${encodeURIComponent(
         complexTopic
       )}&format=json`
@@ -86,7 +98,7 @@ async function findRelevantExample(complexTopic) {
     const pages = wikipediaResponse.data.query.pages;
     const page = Object.values(pages)[0];
 
-    if (page.extract) {
+    if (page && page?.extract) {
       const extract = page.extract;
       const sentences = extract.match(/\(?[^\.!\?]+[\.!\?]\)?/g);
       const exampleSentences = sentences.filter((sentence) =>

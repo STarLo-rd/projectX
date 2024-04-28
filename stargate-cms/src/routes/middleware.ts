@@ -2,7 +2,16 @@ import { Response, NextFunction } from "express";
 import { Access, PayloadRequest } from "payload/types";
 import { User } from "payload/dist/auth";
 import jwt from "jsonwebtoken";
-import {findUser} from "../utils";
+import { findUser } from "../utils";
+import { IncomingHttpHeaders } from "http"; // Import IncomingHttpHeaders
+
+// Extend the Request interface to include the user property
+declare module "express-serve-static-core" {
+  interface Request {
+    user?: User;
+  }
+}
+
 const isUser: Access<any, User> = ({ req: { user } }) => {
   return user && user.collection === "users";
 };
@@ -19,7 +28,7 @@ const accessControl = (
 };
 
 const checkCredits = async (
-  req: Request,
+  req: PayloadRequest<User>,
   res: Response,
   next: NextFunction
 ) => {
@@ -40,12 +49,12 @@ const checkCredits = async (
       collection: decoded.collection,
     });
 
-    if (!user || user.credits < 1) {
+    if (!user || Number(user.credits) < 1) {
       return res.status(402).json({ error: "Insufficient credits" });
     }
 
     // Attach the user to the request object for later use
-    req.user = user;
+    req.user = user as User;
 
     next();
   } catch (error) {
