@@ -1,4 +1,3 @@
-import React from "react";
 import { useAuth } from "../../hooks/auth-context";
 import { Card, Avatar, Typography, Divider } from "antd";
 import { UserOutlined, CalendarOutlined, KeyOutlined } from "@ant-design/icons";
@@ -9,8 +8,12 @@ export const Dashboard = () => {
   const { user } = useAuth();
 
   // Custom date formatting function
-  const formatDate = (dateString) => {
-    const options = { month: "long", day: "numeric", year: "numeric" };
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    };
     return new Date(dateString).toLocaleDateString("en-US", options);
   };
 
@@ -51,9 +54,7 @@ export const Dashboard = () => {
           </div>
         </div>
       </Card>
-   
     </div>
-    
   );
 };
 

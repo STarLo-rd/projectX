@@ -11,12 +11,8 @@ function BasicFooterBrand() {
         "text-xs text-muted"
       )}
     >
-      {/* <StockedUpLogo
-				variant="black"
-				className="w-44"
-			/> */}
-      <img src="" alt="logo" />
-      Inventory Management System
+      <img className="h-28 object-contain" src="/src/assets/logo.png" alt="logo"   />
+      Knowledge platform
     </Link>
   );
 }

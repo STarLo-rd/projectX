@@ -30,7 +30,7 @@ function BasicFooter() {
           )}
         >
           <div>
-            &copy; StockedUp {new Date().getFullYear()} - All rights reserved
+            &copy; Star {new Date().getFullYear()} - All rights reserved
           </div>
           <div>
             Made by:{" "}

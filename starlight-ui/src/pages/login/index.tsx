@@ -6,7 +6,7 @@ import { Form, Input, Button, notification } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useAuth } from "../../hooks/auth-context";
 import useDocumentTitle from "../../hooks/use-document-title";
-import Signup from "../signup";
+import SSOLogin from "../../components/sso";
 
 const Login = () => {
   // useMetaVersion("1.0");
@@ -37,15 +37,14 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen overflow-y-hidden">
       <header className="py-10 lg:py-14 xl:py-16">
         <div className="mx-auto px-4 flex flex-col items-center space-y-2">
           {isDarkMode === true ? (
             <img className="h-20 w-20" src={currentImage} alt="Dark-Logo" />
           ) : (
             <img
-              // className="h-25 w-25 max-h-24 object-contain"
-              style={{ maxHeight: 250, maxWidth: 250, objectFit: "contain" }}
+              className="h-25 w-25 max-h-24 object-contain"
               src={currentImage}
               alt="Light-Logo"
             />
@@ -116,9 +115,11 @@ const Login = () => {
                 >
                   Log in
                 </Button>
+                <div className="flex justify-center py-4">
+                  <SSOLogin />
+                </div>
               </Form.Item>
             </div>
-            <Signup />
           </Form>
         </div>
       </main>

@@ -1,14 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useAuth } from "../../../hooks/auth-context.tsx";
-import { getAuthorizationHeader } from "../../../utils/utils.ts";
-import AxiosInstance from "../../../services/axios-instance.ts";
-import {
-  addUserInterests,
-  getUserProfileByUserId,
-  modifyUserInterests,
-} from "../../../services/user-profile.ts";
+// import {
+//   getUserProfileByUserId,
+//   modifyUserInterests,
+// } from "../../../services/user-profile.ts";
 
 interface UserProfileData {
   user: string;
@@ -53,7 +49,10 @@ const UserProfileForm: React.FC = () => {
     const { name, value, type } = event.target;
     setUserProfile((prevData) => ({
       ...prevData,
-      [name]: type === "checkbox" ? event?.target?.checked : value,
+      [name]:
+        type === "checkbox"
+          ? (event.target as HTMLInputElement).checked
+          : value,
     }));
   };
 
@@ -62,11 +61,8 @@ const UserProfileForm: React.FC = () => {
     console.log(userProfile);
     try {
       // const response = await addUserInterests(userProfile);
-
-      const res = await getUserProfileByUserId(userProfile.user);
-      const response = await modifyUserInterests(userProfile);
-
-      console.log("User profile updated successfully:", response);
+      // const response = await modifyUserInterests(userProfile);
+      // console.log("User profile updated successfully:", response);
       // Handle form submission succeiss (e.g., display success message)
     } catch (error: any) {
       console.log(error?.message);

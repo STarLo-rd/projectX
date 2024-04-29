@@ -1,8 +1,5 @@
 const DEFAULT_TIMEOUT = 1692531200000000000;
-export const PROJECTX_API_URL = "http://127.0.0.1:3002/api";
-export const LOCAL_API_URL = "http://127.0.0.1:3002/api";
+export const PROJECTX_API_URL = import.meta.env.VITE_PROJECTX_API_URL;
+export const LOCAL_API_URL = import.meta.env.VITE_PROJECTX_API_URL;
 
-
-export {
-    DEFAULT_TIMEOUT,
-}
+export { DEFAULT_TIMEOUT };

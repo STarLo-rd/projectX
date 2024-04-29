@@ -3,17 +3,22 @@ import { message, notification } from "antd";
 import AxiosInstance from "./axios-instance";
 import { getAuthorizationHeader } from "../utils/utils";
 import qs from "qs";
-import { useAuth } from "../hooks/auth-context";
 
 interface RoadmapData {
-  interests: [];
+  id: any;
+  interests: { title: string; data: string }[];
   user: string;
-  // data: string;
 }
 
 interface RoadmapResponse {
   id: string;
-  // data: RoadmapData;
+  interests: { title: string; data: string }[];
+  message?: string;
+}
+
+interface RoadmapResponse {
+  id: string;
+  data: RoadmapData;
   interest: [];
 }
 
@@ -128,7 +133,9 @@ async function deleteRoadmapInterest(
   try {
     // Fetch the existing roadmap
     const roadmapResponse = await getUserRoadmap(userEmail);
-
+    if (!roadmapResponse) {
+      throw new Error("No roadmap found for the specified user.");
+    }
     if (!roadmapResponse.interests || roadmapResponse.interests.length === 0) {
       throw new Error("No roadmap found for the specified user.");
     }
@@ -161,7 +168,7 @@ async function deleteRoadmapInterest(
     return updateResponse.data;
   } catch (error) {
     notification.error({
-      message: error.message || "Failed to delete the interest",
+      message: (error as Error).message || "Failed to delete the interest",
     });
     console.error("Failed to delete interest:", error);
   }

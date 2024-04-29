@@ -38,11 +38,6 @@ export const authRoutes = [
     element: <ExplainTopic />,
     breadcrumbName: "explain-topic",
   },
-  {
-      path: "/home",
-      element: <Home />,
-      breadcrumbName: "Home",
-  },
 ];
 
 export const unAuthRoutes = [
@@ -55,5 +50,10 @@ export const unAuthRoutes = [
     path: "/signup",
     id: "signup",
     element: <SignUp />,
+  },
+  {
+    path: "/home",
+    element: <Home />,
+    breadcrumbName: "Home",
   },
 ];

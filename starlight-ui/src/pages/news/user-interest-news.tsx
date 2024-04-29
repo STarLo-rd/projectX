@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Layout, Input, Typography, Form, Skeleton } from "antd";
+import { Input, Form, Skeleton } from "antd";
 import ListNews from "./list-news";
 const { Search } = Input;
-
-const { Header, Content } = Layout;
-const { Title, Text } = Typography;
 
 interface Article {
   title: string;
@@ -14,6 +11,8 @@ interface Article {
   url: string;
   image_url: string;
   pubDate: string;
+  source_url?: string;
+  source_icon: string; // Include source_icon property here
   source: {
     name: string;
   };
@@ -23,7 +22,6 @@ const UserInterestNews: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [userInterest, setUserInterest] = useState<string>("web development");
   const [loading, setLoading] = useState<boolean>(false);
-  const [searchLoading, setSearchLoading] = useState<boolean>(true);
 
   const fetchNews = async (query: string) => {
     setLoading(true);
@@ -63,6 +61,7 @@ const UserInterestNews: React.FC = () => {
     <>
       <section>
         <Form name="userInterestForm" layout="inline" className="mb-4">
+          <p>{userInterest}</p>
           <Form.Item className="mr-2">
             <Search
               placeholder="Enter your interest"

@@ -6,8 +6,8 @@ import authService, {
   getCurrentUser,
 } from "../services/authentication";
 import { CurrentUser, IChangePasswordInfo, IResetPasswordInfo } from "../types";
-import darkImage from "../images/image.png";
-import lightImage from "../images/image.png";
+import darkImage from "../assets/logo.png";
+import lightImage from "../assets/logo.png";
 interface AuthContextType {
   user: CurrentUser;
   credit: number;
@@ -26,7 +26,7 @@ interface AuthContextType {
   sendRequestAccount: (data: any) => any;
   getUserById: (id: string) => any;
   changeUserPassword: (data: IResetPasswordInfo) => any;
-  deduceCredit:any;
+  deduceCredit: any;
 }
 
 /**
@@ -178,7 +178,7 @@ export function useAuth(): AuthContextType {
 export function RequireAuth({ children }: { children: JSX.Element }): any {
   const accessToken = authService.getAccessToken();
   if (!accessToken) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/home" replace />;
   }
 
   return children;

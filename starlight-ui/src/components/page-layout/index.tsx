@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import {
-  Breadcrumb,
+  // Breadcrumb,
   Button,
   ConfigProvider,
   Divider,
@@ -9,9 +9,8 @@ import {
   Grid,
   Layout,
   Menu,
-  Space,
+  // Space,
   theme,
-  Typography,
   Image,
   notification,
   Progress,
@@ -19,25 +18,22 @@ import {
 import {
   LogoutOutlined,
   MenuOutlined,
-  ScanOutlined,
+  // ScanOutlined,
   UserOutlined,
   HomeOutlined,
-  FileTextOutlined,
-  WalletOutlined,
   DeploymentUnitOutlined,
   ForkOutlined,
   GlobalOutlined,
 } from "@ant-design/icons";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import {  Outlet, useNavigate } from "react-router-dom";
 import { useStyles } from "./styles";
-import { authRoutes } from "../../routes";
+// import { authRoutes } from "../../routes";
 import { useAuth } from "../../hooks/auth-context";
-import { useMediaQuery } from "antd";
 
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
 const { Sider, Content } = Layout;
-const { Text, Title } = Typography;
+// const { Text, Title } = Typography;
 
 export default function AppShell() {
   const { token } = useToken();
@@ -121,18 +117,18 @@ export default function AppShell() {
   /**
    * Dynamic Breadcrumb Functionality
    */
-  const pathSnippets = location.pathname.split("/").filter((i) => i);
-  const breadcrumbItems = pathSnippets.map((snippet, index) => {
-    const path = `/${pathSnippets.slice(0, index + 1).join("/")}`;
-    const pathConfig = authRoutes.find((route) => route.path === path);
-    return {
-      title: pathConfig ? (
-        <Link to={path}>{pathConfig.breadcrumbName}</Link>
-      ) : (
-        <Link to={path}>{snippet}</Link>
-      ),
-    };
-  });
+  // const pathSnippets = location.pathname.split("/").filter((i) => i);
+  // const breadcrumbItems = pathSnippets.map((snippet, index) => {
+  //   const path = `/${pathSnippets.slice(0, index + 1).join("/")}`;
+  //   const pathConfig = authRoutes.find((route) => route.path === path);
+  //   return {
+  //     title: pathConfig ? (
+  //       <Link to={path}>{pathConfig.breadcrumbName}</Link>
+  //     ) : (
+  //       <Link to={path}>{snippet}</Link>
+  //     ),
+  //   };
+  // });
   const mobileMenuItems = items.concat(profileMenuItems);
 
   const menus = (
@@ -183,7 +179,7 @@ export default function AppShell() {
               <div className="p-4">
                 <Image
                   preview={false}
-                  src="/image.png"
+                  src="/src/assets/logo.png"
                   style={{ height: 100, width: 150, objectFit: "contain" }}
                   alt="innovateEdu Logo"
                 />
@@ -195,15 +191,16 @@ export default function AppShell() {
                 <div className="flex flex-col items-center">
                   {user && (
                     <div className="text-center w-full">
-                      <h3 className="text-lg font-bold mb-2">star ai</h3>
-
+                      {!collapsed && (
+                        <h3 className="text-lg font-bold mb-2">SiriusWay</h3>
+                      )}
                       <div className="p-1.5">
                         <div className="flex flex-wrap justify-around">
                           <p className="text-gray-500 mb-1">credit remaining</p>
                           <p>{credit}</p>
                         </div>
                         <Progress
-                          percent={(credit / 200) * 100}
+                          percent={(credit / 100) * 100}
                           strokeColor={{ from: "#108ee9", to: "#87d068" }}
                         />
                       </div>
@@ -243,26 +240,28 @@ export default function AppShell() {
                   items={mobileMenuItems}
                   onClick={onClose}
                 />
-                 <div>
-                <div className="flex flex-col items-center">
-                  {user && (
-                    <div className="text-center w-full">
-                      <h3 className="text-lg font-bold mb-2">star ai</h3>
+                <div>
+                  <div className="flex flex-col items-center">
+                    {user && (
+                      <div className="text-center w-full">
+                        <h3 className="text-lg font-bold mb-2">SiriusWay</h3>
 
-                      <div className="p-1.5">
-                        <div className="flex flex-wrap justify-around">
-                          <p className="text-gray-500 mb-1">credit remaining</p>
-                          <p>{credit}</p>
+                        <div className="p-1.5">
+                          <div className="flex flex-wrap justify-around">
+                            <p className="text-gray-500 mb-1">
+                              credit remaining
+                            </p>
+                            <p>{credit}</p>
+                          </div>
+                          <Progress
+                            percent={(credit / 100) * 100}
+                            strokeColor={{ from: "#108ee9", to: "#87d068" }}
+                          />
                         </div>
-                        <Progress
-                          percent={(credit / 200) * 100}
-                          strokeColor={{ from: "#108ee9", to: "#87d068" }}
-                        />
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
               </Drawer>
             </div>
           </div>

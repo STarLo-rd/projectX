@@ -1,9 +1,9 @@
 import React from "react";
 import UserInterestNews from "./user-interest-news";
-import DisplayNews from "./display-news";
+// import DisplayNews from "./display-news";
 import Header from "./header";
 import Banner from "./banner";
-import ListNews from "./list-news";
+// import ListNews from "./list-news";
 
 const News: React.FC = () => {
   return (

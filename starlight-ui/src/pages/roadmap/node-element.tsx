@@ -1,5 +1,5 @@
 import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Alert, Checkbox, message, Popconfirm, Spin } from "antd";
+import { Checkbox, message, Popconfirm, Spin } from "antd";
 import { useState } from "react";
 
 const NodeElement = ({
@@ -27,6 +27,7 @@ const NodeElement = ({
       });
       setNewNodeTitle("");
       setNewNodeDescription("");
+      console.log(selectedNode);
     }
   };
 

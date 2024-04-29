@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import Tree from "react-d3-tree";
+import Tree, { Orientation, PathFunction, PathFunctionOption } from "react-d3-tree";
 import NodeElement from "./node-element";
 import { useAuth } from "../../hooks/auth-context";
 import {
@@ -15,7 +15,6 @@ import {
   Popconfirm,
   Progress,
   Select,
-  Skeleton,
   Spin,
 } from "antd";
 import "./roadmap.css";
@@ -41,21 +40,31 @@ import {
 import CelebrationAnimation from "../../components/templates/celebration-animation";
 import { scrollToTop } from "../../utils/utils";
 
+interface Roadmap {
+  title: string;
+  data: string;
+}
+
+interface NodeDatum {
+  name: string;
+  children?: NodeDatum[];
+}
+
 const RoadMap = () => {
-  const [myTreeData, setMyTreeData] = useState([]);
+  const [myTreeData, setMyTreeData] = useState<NodeDatum[]>([]);
   const [selectedNode, setSelectedNode] = useState(null);
-  const [interest, setInterest] = useState("");
+  const [interest] = useState("");
   const { user, deduceCredit } = useAuth();
   const [showHeading, setShowHeading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [orientation, setOrientation] = useState("vertical");
   const [pathFunc, setPathFunc] = useState("step");
-  const [roadmaps, setRoadmaps] = useState([]);
+  const [roadmaps, setRoadmaps] = useState<Roadmap[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [typedInterest, setTypedInterest] = useState(""); // For input field
   const [selectedInterest, setSelectedInterest] = useState(""); // For dropdown selection
-  const treeWrapperRef = useRef(null); // Reference to the tree wrapper for scrolling
-  const [controlledLoading, setControlledLoading] = useState(false)
+  const treeWrapperRef = useRef<HTMLDivElement>(null); // Reference to the tree wrapper for scrolling
+  const [controlledLoading, setControlledLoading] = useState(false);
 
   const scrollToBottom = () => {
     if (treeWrapperRef.current) {
@@ -104,7 +113,12 @@ const RoadMap = () => {
         ? `${interest}, ${nodeDatum.name}`
         : nodeDatum.name;
 
-      const newData = await generateRoadmap(newInterest, deduceCredit);
+      let newData;
+      try {
+        newData = await generateRoadmap(newInterest, deduceCredit);
+      } catch (error) {
+        setControlledLoading(false);
+      }
 
       if (newData && newData.length) {
         const updatedData = appendChildren(myTreeData, nodeDatum.name, newData);
@@ -118,7 +132,7 @@ const RoadMap = () => {
         });
 
         setRoadmaps(updatedRoadmaps);
-        setControlledLoading(false)
+        setControlledLoading(false);
       }
     }
   };
@@ -217,7 +231,7 @@ const RoadMap = () => {
     } catch (error) {
       notification.error({
         message: "Failed to save the roadmap",
-        description: error.message,
+        description: (error as Error).message,
         duration: 10,
       });
       setIsLoading(false);
@@ -445,15 +459,14 @@ const RoadMap = () => {
             <>
               <Tree
                 data={myTreeData}
-                orientation={orientation}
-                nodeSvgShape={{ shape: "circle", shapeProps: { r: 10 } }}
-                pathFunc={pathFunc}
+                orientation={orientation as Orientation} 
+                pathFunc={pathFunc as PathFunctionOption | PathFunction}
                 nodeSize={{
                   x: 500,
                   y: 300,
                 }}
                 translate={{ x: 600, y: 100 }}
-                allowForeignObjects={true}
+                // allowForeignObjects={true}
                 renderCustomNodeElement={(props) => (
                   <NodeElement
                     {...props}

@@ -10,7 +10,7 @@ interface IntroSectionProps {
   onChange: (value: string) => void;
   onSubmit: () => void;
   showHeading: boolean;
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
 const IntroSection: React.FC<IntroSectionProps> = ({

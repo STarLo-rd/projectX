@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { PROJECTX_API_URL } from "../constants/global";
 import {
   apiUrls,
-  homeUrl,
+  // homeUrl,
   loginUrl,
   NOTIFY_DURATION,
   signupUrl,
