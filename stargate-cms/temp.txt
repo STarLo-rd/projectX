@@ -1,0 +1,23 @@
+{
+  "academicPercentages": {
+    "operatingSystems": 80,
+    "algorithms": 85,
+    "programmingConcepts": 90,
+    "softwareEngineering": 75,
+    "computerNetworks": 70,
+    "electronics": 65,
+    "computerArchitecture": 80,
+    "mathematics": 90,
+    "communicationSkills": 75
+  },
+  "workingHoursPerDay": 8,
+  "interestedBooks": ["Programming", "Science Fiction", "Self-Help"],
+  "salaryRange": "50000-60000",
+  "relationship": true,
+  "behavior": "gentle",
+  "workPreference": "technical",
+  "salaryOrWorkHard": "workHard",
+  "teamworkExperience": true,
+  "introvert": false,
+  "suggestedJobRole": null
+}
