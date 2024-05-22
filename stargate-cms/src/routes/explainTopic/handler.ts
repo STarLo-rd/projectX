@@ -4,13 +4,26 @@ import payload from "payload";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import axios from "axios";
 import { HfInference } from "@huggingface/inference";
+import { deductCredits } from "../../utils";
 const genAI = new GoogleGenerativeAI("AIzaSyBWABGD2ryXU63Y7qHhKEEC1SMaaIlaBIM"); // Replace "YOUR_API_KEY" with your actual API key
+
+
+interface WikipediaResponse {
+  query: {
+    pages: {
+      [key: string]: {
+        extract?: string;
+      };
+    };
+  };
+}
+
 
 // Implement your logic for task decomposition, context framing, analogy finding, and example finding
 async function decomposeComplexTopic(complexTopic) {
   try {
     // Example implementation using Wikipedia API for task decomposition
-    const wikipediaResponse = await axios.get(
+    const wikipediaResponse = await axios.get<WikipediaResponse>(
       `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&redirects=1&titles=${encodeURIComponent(
         complexTopic
       )}&format=json`
@@ -18,8 +31,8 @@ async function decomposeComplexTopic(complexTopic) {
     const pages = wikipediaResponse.data.query.pages;
     const page = Object.values(pages)[0];
 
-    if (page.extract) {
-      const extract = page.extract;
+    if (page && page?.extract) {
+      const extract = page?.extract;
       const sentences = extract.match(/\(?[^\.!\?]+[\.!\?]\)?/g);
       const subtopics = sentences.map((sentence) => sentence.trim());
       return subtopics;
@@ -35,7 +48,7 @@ async function decomposeComplexTopic(complexTopic) {
 async function getContextualInfo(complexTopic) {
   try {
     // Example implementation using Wikipedia API for context framing
-    const wikipediaResponse = await axios.get(
+    const wikipediaResponse = await axios.get<WikipediaResponse>(
       `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&redirects=1&titles=${encodeURIComponent(
         complexTopic
       )}&format=json`
@@ -43,7 +56,7 @@ async function getContextualInfo(complexTopic) {
     const pages = wikipediaResponse.data.query.pages;
     const page = Object.values(pages)[0];
 
-    if (page.extract) {
+    if (page && page?.extract) {
       return page.extract;
     } else {
       return `No contextual information found for "${complexTopic}"`;
@@ -78,7 +91,7 @@ async function findAppropriateAnalogy(complexTopic) {
 async function findRelevantExample(complexTopic) {
   try {
     // Example implementation using Wikipedia API for finding relevant examples
-    const wikipediaResponse = await axios.get(
+    const wikipediaResponse = await axios.get<WikipediaResponse>(
       `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&redirects=1&titles=${encodeURIComponent(
         complexTopic
       )}&format=json`
@@ -86,7 +99,7 @@ async function findRelevantExample(complexTopic) {
     const pages = wikipediaResponse.data.query.pages;
     const page = Object.values(pages)[0];
 
-    if (page.extract) {
+    if (page && page?.extract) {
       const extract = page.extract;
       const sentences = extract.match(/\(?[^\.!\?]+[\.!\?]\)?/g);
       const exampleSentences = sentences.filter((sentence) =>
@@ -159,6 +172,12 @@ const explainTopic: RequestHandler<DefaultParams, any, any> = async (
   _next
 ) => {
   try {
+    const deductionSuccessful = await deductCredits(req.user.id, 1); // Deduct 1 credit
+    if (!deductionSuccessful) { 
+      return res
+        .status(402)
+        .json({ error: "Insufficient credits to perform this operation" });
+    }
     const { interest } = req.body;
     const data = await callGeminiAIModel(interest);
     res.json({ data });
@@ -176,19 +195,30 @@ const summarizeText: RequestHandler<DefaultParams, any, any> = async (
   _next
 ) => {
   try {
+    console.log("called from summarizeText")
     const { data } = req.body;
-    const hf = new HfInference("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");
-    const result = await hf.summarization({
-      model: "facebook/bart-large-cnn",
-      inputs: data,
-      parameters: {
-        max_length: 100,
-      },
-    });
+    console.log(data)
+    const hf = new HfInference("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"); 
+     const summarizationResult = await hf.summarization({
+       model: 'facebook/bart-large-cnn',
+       inputs: JSON.stringify(data),
+       parameters: {
+         max_length: 1000
+       }
+     });
 
-    res.send(result);
+    //  const dataR= await hf.translation({
+    //   model: 'facebook/mbart-large-50-many-to-many-mmt',
+    //   inputs: JSON.stringify(summarizationResult),
+    //   parameters: {
+    //   "src_lang": "en_XX",
+    //   "tgt_lang": "ta_IN"
+    //  }
+    // })
+    // console.log(dataR);
+    res.send(summarizationResult);
   } catch (err) {
-    console.error("Error in explainTopic:", err.message);
+    console.error("Error in explainTopic:", err);
     payload.logger.error(err.message);
     payload.logger.error(err.data);
     return res.status(500).send(err.message);

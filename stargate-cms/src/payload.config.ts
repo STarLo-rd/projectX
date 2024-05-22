@@ -1,30 +1,31 @@
-import path from 'path'
+import path from "path";
 
-import { payloadCloud } from '@payloadcms/plugin-cloud'
-import { mongooseAdapter } from '@payloadcms/db-mongodb'
-import { webpackBundler } from '@payloadcms/bundler-webpack'
-import { slateEditor } from '@payloadcms/richtext-slate'
-import { buildConfig } from 'payload/config'
+import { payloadCloud } from "@payloadcms/plugin-cloud";
+import { mongooseAdapter } from "@payloadcms/db-mongodb";
+import { webpackBundler } from "@payloadcms/bundler-webpack";
+import { slateEditor } from "@payloadcms/richtext-slate";
+import { buildConfig } from "payload/config";
 
-import Users from './collections/Users'
-import Domains from './collections/Domains'; // Import the 'domains' collection
-import UserProfile from './collections/User-Profile'
-import RoadMap from './collections/Roadmap'
+import Users from "./collections/Users";
+import Domains from "./collections/Domains"; // Import the 'domains' collection
+import UserProfile from "./collections/User-Profile";
+import RoadMap from "./collections/Roadmap";
+import Dreams from "./collections/Dreams";
 export default buildConfig({
   admin: {
     user: Users.slug,
     bundler: webpackBundler(),
   },
   editor: slateEditor({}),
-  collections: [Users, Domains, UserProfile, RoadMap],
+  collections: [Users, Domains, UserProfile, RoadMap, Dreams],
   typescript: {
-    outputFile: path.resolve(__dirname, 'payload-types.ts'),
+    outputFile: path.resolve(__dirname, "payload-types.ts"),
   },
   graphQL: {
-    schemaOutputFile: path.resolve(__dirname, 'generated-schema.graphql'),
+    schemaOutputFile: path.resolve(__dirname, "generated-schema.graphql"),
   },
   plugins: [payloadCloud()],
   db: mongooseAdapter({
     url: process.env.DATABASE_URI,
   }),
-})
+});

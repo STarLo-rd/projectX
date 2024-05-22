@@ -1,9 +1,12 @@
+import Home from "./components/HomePage";
 import Dashboard from "./pages/dashboard";
+import Dream from "./pages/dream";
 import ExplainTopic from "./pages/explain-topic";
 import Login from "./pages/login";
 import News from "./pages/news";
 import Roadmaps from "./pages/roadmap";
-import UserProfileForm from "./pages/user-profile/userprofile-form";
+import SignUp from "./pages/signup";
+import UserProfileForm from "./pages/user-profile";
 
 export const authRoutes = [
   {
@@ -25,6 +28,12 @@ export const authRoutes = [
     breadcrumbName: "Home",
   },
   {
+    path: "/dreams",
+    id: "dream",
+    element: <Dream />,
+    breadcrumbName: "dream",
+  },
+  {
     path: "/news",
     id: "news",
     element: <News />,
@@ -36,11 +45,6 @@ export const authRoutes = [
     element: <ExplainTopic />,
     breadcrumbName: "explain-topic",
   },
-  // {
-  //     path: "/",
-  //     element: <Dashboard />,
-  //     breadcrumbName: "Home",
-  // },
 ];
 
 export const unAuthRoutes = [
@@ -48,5 +52,15 @@ export const unAuthRoutes = [
     path: "/login",
     id: "login",
     element: <Login />,
+  },
+  {
+    path: "/signup",
+    id: "signup",
+    element: <SignUp />,
+  },
+  {
+    path: "/home",
+    element: <Home />,
+    breadcrumbName: "Home",
   },
 ];

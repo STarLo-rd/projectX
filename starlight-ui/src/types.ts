@@ -15,11 +15,8 @@ export interface User {
     id: string;
     name?: string;
     // roles?: string[] | Role[];
-    wallet: {
-        address?: string;
-        publicKey?: string;
-        extendedPublicKey?: string;
-    };
+    credits: number,
+    role: any,
     enableAPIKey?: boolean;
     apiKey?: string;
     apiKeyIndex?: string;

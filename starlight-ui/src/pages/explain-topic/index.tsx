@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
-import { Button, Divider, Form, Input, notification } from "antd";
+import { Button, Divider, notification } from "antd";
 import AxiosInstance from "../../services/axios-instance";
 import { getAuthorizationHeader } from "../../utils/utils";
 import { Skeleton } from "antd";
@@ -39,7 +39,7 @@ const ExplainTopic: React.FC = () => {
       //   .replace(/\n\n/g, "\n");
       const lines = data.data.split("\n");
       console.log(lines);
-      const compiledText = data.data.replace(/\n/g, "\n\n");
+      // const compiledText = data.data.replace(/\n/g, "\n\n");
       setData(lines);
       setLoading(false);
     } catch (error) {

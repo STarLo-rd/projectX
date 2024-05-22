@@ -10,14 +10,14 @@
     "build:server": "tsc",
     "build": "yarn copyfiles && yarn build:payload && yarn build:server",
     "serve": "cross-env PAYLOAD_CONFIG_PATH=dist/payload.config.js NODE_ENV=production node dist/server.js",
-    "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png}\" dist/",
+    "copyfiles": "npx copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png}\" dist/",
     "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types",
     "generate:graphQLSchema": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:graphQLSchema",
     "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload"
   },
   "dependencies": {
     "@google/generative-ai": "^0.5.0",
-    "@huggingface/inference": "^2.6.6",
+    "@huggingface/inference": "^2.6.7",
     "@payloadcms/bundler-webpack": "^1.0.0",
     "@payloadcms/db-mongodb": "^1.0.0",
     "@payloadcms/plugin-cloud": "^3.0.0",
@@ -27,9 +27,10 @@
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "nodemailer": "^6.8.0",
-    "nodemailer-mailgun-transport": "^2.1.5",
+    "google-auth-library": "^9.9.0",
+    "node-cron": "^3.0.3",
     "payload": "^2.0.0",
+    "resend": "^3.2.0",
     "senti": "^0.0.2"
   },
   "devDependencies": {

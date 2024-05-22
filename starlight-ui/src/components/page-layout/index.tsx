@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import {
-  Breadcrumb,
+  // Breadcrumb,
   Button,
   ConfigProvider,
   Divider,
@@ -9,44 +9,49 @@ import {
   Grid,
   Layout,
   Menu,
-  Space,
+  // Space,
   theme,
-  Typography,
   Image,
   notification,
+  Progress,
 } from "antd";
 import {
   LogoutOutlined,
   MenuOutlined,
-  ScanOutlined,
+  // ScanOutlined,
   UserOutlined,
   HomeOutlined,
-  FileTextOutlined,
-  WalletOutlined,
   DeploymentUnitOutlined,
   ForkOutlined,
   GlobalOutlined,
+  AreaChartOutlined,
 } from "@ant-design/icons";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import {  Outlet, useNavigate } from "react-router-dom";
 import { useStyles } from "./styles";
-import { authRoutes } from "../../routes";
+// import { authRoutes } from "../../routes";
+import { useAuth } from "../../hooks/auth-context";
 
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
 const { Sider, Content } = Layout;
-const { Text, Title } = Typography;
+// const { Text, Title } = Typography;
 
 export default function AppShell() {
   const { token } = useToken();
   const screens = useBreakpoint();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const { user, credit } = useAuth();
+  const [collapsed, setCollapsed] = useState(true); // State to manage the collapse
   const showDrawer = () => {
     setOpen(true);
   };
   const onClose = () => {
     setOpen(false);
   };
+  useEffect(() => {
+    setCollapsed(true);
+  }, []);
 
   /**
    * Antblocks CSS
@@ -82,6 +87,12 @@ export default function AppShell() {
       onClick: () => navigate("/roadmap"),
     },
     {
+      key: "dream",
+      icon: <AreaChartOutlined />,
+      label: "Dreams",
+      onClick: () => navigate("/dreams"),
+    },
+    {
       key: "news",
       icon: <GlobalOutlined />,
       label: "News",
@@ -113,18 +124,19 @@ export default function AppShell() {
   /**
    * Dynamic Breadcrumb Functionality
    */
-  const pathSnippets = location.pathname.split("/").filter((i) => i);
-  const breadcrumbItems = pathSnippets.map((snippet, index) => {
-    const path = `/${pathSnippets.slice(0, index + 1).join("/")}`;
-    const pathConfig = authRoutes.find((route) => route.path === path);
-    return {
-      title: pathConfig ? (
-        <Link to={path}>{pathConfig.breadcrumbName}</Link>
-      ) : (
-        <Link to={path}>{snippet}</Link>
-      ),
-    };
-  });
+  // const pathSnippets = location.pathname.split("/").filter((i) => i);
+  // const breadcrumbItems = pathSnippets.map((snippet, index) => {
+  //   const path = `/${pathSnippets.slice(0, index + 1).join("/")}`;
+  //   const pathConfig = authRoutes.find((route) => route.path === path);
+  //   return {
+  //     title: pathConfig ? (
+  //       <Link to={path}>{pathConfig.breadcrumbName}</Link>
+  //     ) : (
+  //       <Link to={path}>{snippet}</Link>
+  //     ),
+  //   };
+  // });
+  const mobileMenuItems = items.concat(profileMenuItems);
 
   const menus = (
     <>
@@ -161,17 +173,20 @@ export default function AppShell() {
             left: 0,
             background: "black",
           }}
-          width={250}
+          width={screens.md ? 250 : 80} // Set the width based on screen size
           theme="dark"
           breakpoint="lg"
           collapsible
+          collapsedWidth={screens.md ? 80 : 0} // Set the collapsed width based on screen size
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
         >
           <div className="flex flex-col justify-between h-full">
             <div>
               <div className="p-4">
                 <Image
                   preview={false}
-                  src="/image.png"
+                  src="/src/assets/logo.png"
                   style={{ height: 100, width: 150, objectFit: "contain" }}
                   alt="innovateEdu Logo"
                 />
@@ -179,6 +194,27 @@ export default function AppShell() {
               {menus}
             </div>
             <div className="p-4">
+              <div>
+                <div className="flex flex-col items-center">
+                  {user && (
+                    <div className="text-center w-full">
+                      {!collapsed && (
+                        <h3 className="text-lg font-bold mb-2">SiriusWay</h3>
+                      )}
+                      <div className="p-1.5">
+                        <div className="flex flex-wrap justify-around">
+                          <p className="text-gray-500 mb-1">credit remaining</p>
+                          <p>{credit}</p>
+                        </div>
+                        <Progress
+                          percent={(credit / 100) * 100}
+                          strokeColor={{ from: "#108ee9", to: "#87d068" }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
               <Menu
                 theme="dark"
                 mode="inline"
@@ -204,7 +240,35 @@ export default function AppShell() {
                 onClose={onClose}
                 open={open}
               >
-                {menus}
+                <Menu
+                  theme={screens.sm ? "dark" : "light"}
+                  mode="inline"
+                  style={styles.navMenu}
+                  items={mobileMenuItems}
+                  onClick={onClose}
+                />
+                <div>
+                  <div className="flex flex-col items-center">
+                    {user && (
+                      <div className="text-center w-full">
+                        <h3 className="text-lg font-bold mb-2">SiriusWay</h3>
+
+                        <div className="p-1.5">
+                          <div className="flex flex-wrap justify-around">
+                            <p className="text-gray-500 mb-1">
+                              credit remaining
+                            </p>
+                            <p>{credit}</p>
+                          </div>
+                          <Progress
+                            percent={(credit / 100) * 100}
+                            strokeColor={{ from: "#108ee9", to: "#87d068" }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </Drawer>
             </div>
           </div>
@@ -235,8 +299,8 @@ export default function AppShell() {
             </div>
           </div> */}
           <Content>
-            <div style={styles.section}>
-              <div style={styles.container} className="sku-panel_content">
+            <div>
+              <div>
                 <Outlet />
               </div>
             </div>
