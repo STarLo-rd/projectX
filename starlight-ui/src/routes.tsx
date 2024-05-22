@@ -1,11 +1,12 @@
 import Home from "./components/HomePage";
 import Dashboard from "./pages/dashboard";
+import Dream from "./pages/dream";
 import ExplainTopic from "./pages/explain-topic";
 import Login from "./pages/login";
 import News from "./pages/news";
 import Roadmaps from "./pages/roadmap";
 import SignUp from "./pages/signup";
-import UserProfileForm from "./pages/user-profile/userprofile-form";
+import UserProfileForm from "./pages/user-profile";
 
 export const authRoutes = [
   {
@@ -25,6 +26,12 @@ export const authRoutes = [
     id: "roadmap",
     element: <Roadmaps />,
     breadcrumbName: "Home",
+  },
+  {
+    path: "/dreams",
+    id: "dream",
+    element: <Dream />,
+    breadcrumbName: "dream",
   },
   {
     path: "/news",

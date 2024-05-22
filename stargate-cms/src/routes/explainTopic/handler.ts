@@ -4,6 +4,7 @@ import payload from "payload";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import axios from "axios";
 import { HfInference } from "@huggingface/inference";
+import { deductCredits } from "../../utils";
 const genAI = new GoogleGenerativeAI("AIzaSyBWABGD2ryXU63Y7qHhKEEC1SMaaIlaBIM"); // Replace "YOUR_API_KEY" with your actual API key
 
 
@@ -171,6 +172,12 @@ const explainTopic: RequestHandler<DefaultParams, any, any> = async (
   _next
 ) => {
   try {
+    const deductionSuccessful = await deductCredits(req.user.id, 1); // Deduct 1 credit
+    if (!deductionSuccessful) { 
+      return res
+        .status(402)
+        .json({ error: "Insufficient credits to perform this operation" });
+    }
     const { interest } = req.body;
     const data = await callGeminiAIModel(interest);
     res.json({ data });
@@ -188,19 +195,30 @@ const summarizeText: RequestHandler<DefaultParams, any, any> = async (
   _next
 ) => {
   try {
+    console.log("called from summarizeText")
     const { data } = req.body;
-    const hf = new HfInference("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");
-    const result = await hf.summarization({
-      model: "facebook/bart-large-cnn",
-      inputs: data,
-      parameters: {
-        max_length: 100,
-      },
-    });
+    console.log(data)
+    const hf = new HfInference("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"); 
+     const summarizationResult = await hf.summarization({
+       model: 'facebook/bart-large-cnn',
+       inputs: JSON.stringify(data),
+       parameters: {
+         max_length: 1000
+       }
+     });
 
-    res.send(result);
+    //  const dataR= await hf.translation({
+    //   model: 'facebook/mbart-large-50-many-to-many-mmt',
+    //   inputs: JSON.stringify(summarizationResult),
+    //   parameters: {
+    //   "src_lang": "en_XX",
+    //   "tgt_lang": "ta_IN"
+    //  }
+    // })
+    // console.log(dataR);
+    res.send(summarizationResult);
   } catch (err) {
-    console.error("Error in explainTopic:", err.message);
+    console.error("Error in explainTopic:", err);
     payload.logger.error(err.message);
     payload.logger.error(err.data);
     return res.status(500).send(err.message);

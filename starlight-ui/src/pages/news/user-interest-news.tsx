@@ -61,7 +61,7 @@ const UserInterestNews: React.FC = () => {
     <>
       <section>
         <Form name="userInterestForm" layout="inline" className="mb-4">
-          <p>{userInterest}</p>
+          {/* <p>{userInterest}</p> */}
           <Form.Item className="mr-2">
             <Search
               placeholder="Enter your interest"

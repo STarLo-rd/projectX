@@ -1,10 +1,13 @@
 import express from "express";
-import { accessControl } from "../middleware";
+import { accessControl, checkCredits } from "../middleware";
 import { explainTopic, geneateQuestions, summarizeText } from "./handler";
 
 const explainRouter = express.Router();
 
-// roadmapRouter.use(accessControl);
+explainRouter.use(checkCredits);
+
+// explainRouter.use(accessControl);
+
 
 explainRouter.post("/topic", explainTopic)
 explainRouter.post("/summarize", summarizeText)

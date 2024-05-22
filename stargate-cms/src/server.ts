@@ -8,6 +8,7 @@ import dreamAnalysisRouter from "./routes/dreamAnalysis";
 require("dotenv").config();
 const app = express();
 import authRouter from "./routes/auth";
+import profileRouter from "./routes/userProfile";
 
 // Redirect root to Admin panel
 app.get("/", (_, res) => {
@@ -70,6 +71,7 @@ payload.init({
 // app.use("/api/user", profileRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/roadmap", roadmapRouter);
+app.use("/api/profile", profileRouter)
 app.use("/api/explain", explainRouter);
 app.use("/api/dream", dreamAnalysisRouter);
 

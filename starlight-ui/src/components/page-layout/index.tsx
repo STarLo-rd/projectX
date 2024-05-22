@@ -24,6 +24,7 @@ import {
   DeploymentUnitOutlined,
   ForkOutlined,
   GlobalOutlined,
+  AreaChartOutlined,
 } from "@ant-design/icons";
 import {  Outlet, useNavigate } from "react-router-dom";
 import { useStyles } from "./styles";
@@ -84,6 +85,12 @@ export default function AppShell() {
       icon: <ForkOutlined />,
       label: "Roadmap",
       onClick: () => navigate("/roadmap"),
+    },
+    {
+      key: "dream",
+      icon: <AreaChartOutlined />,
+      label: "Dreams",
+      onClick: () => navigate("/dreams"),
     },
     {
       key: "news",
