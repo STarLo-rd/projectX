@@ -1,30 +1,49 @@
-.tree-skeleton {
+.loading-skeleton {
+  padding: 1rem;
+}
+
+.header {
+  margin-bottom: 1rem;
+}
+
+.graph {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .node {
-  width: 40px; /* Made larger */
-  height: 40px; /* Made larger */
-  border-radius: 50%;
-  background-color: #ddd;
-  margin-bottom: 20px; /* Increased spacing */
-  animation: pulse 1s infinite;
-}
-
-.branch {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: 40px; /* Increased margin */
+  margin-bottom: 0.3rem;
 }
 
-.leaf {
-  width: 10px; /* Leaf width */
-  height: 20px; /* Leaf height */
-  background-color: green; /* Leaf color */
-  margin-bottom: 10px; /* Leaf spacing */
+.connector {
+  width: 2px;
+  background-color: #f0f0f0;
+}
+
+.connector.vertical {
+  height: 4rem;
+}
+
+.connector.horizontal {
+  width: 4rem;
+  height: 2px;
+}
+
+.line {
+  height: 1rem;
+  width: 8rem;
+  background-color: #f0f0f0;
+  margin-bottom: 0.5rem;
+  border-radius: 0.25rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.line:last-child {
+  margin-bottom: 0;
 }
 
 @keyframes pulse {
@@ -35,6 +54,6 @@
     opacity: 1;
   }
   100% {
-    opacity: 0.5;
+    opacity: 0.6;
   }
 }

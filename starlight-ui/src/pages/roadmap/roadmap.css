@@ -29,3 +29,22 @@
   /* Let's also make the radius of leaf nodes larger */
   r: 40;
 }
+
+
+.animated-text {
+  animation: animateGradient 5s linear infinite; /* Adjust duration and timing function as needed */
+  fill: transparent; /* Set text fill as transparent */
+}
+
+@keyframes animateGradient {
+  0% {
+    fill: linear-gradient(90deg, #5C42F5, #AB47BC, #F44336); /* Start color stops */
+    background-size: 200% 200%;
+    background-position: 0% 50%;
+  }
+  100% {
+    fill: linear-gradient(90deg, #5C42F5, #AB47BC, #F44336); /* End color stops */
+    background-size: 200% 200%;
+    background-position: 100% 50%;
+  }
+}

@@ -6,15 +6,17 @@ import authService, {
   getCurrentUser,
 } from "../services/authentication";
 import { CurrentUser, IChangePasswordInfo, IResetPasswordInfo } from "../types";
-import darkImage from "../images/image.png";
-import lightImage from "../images/image.png";
+import darkImage from "../assets/logo.png";
+import lightImage from "../assets/logo.png";
 interface AuthContextType {
   user: CurrentUser;
+  credit: number;
   isDarkMode: any;
   currentImage: any;
   handleToggle: (checked: any) => any;
   setCurrentUser: () => Promise<void>;
   login: (email: string, password: string) => Promise<IUserAuthInfo>;
+  loginSSO: (ssoToken) => Promise<IUserAuthInfo>;
   sendResetRequest: (email: string) => any;
   verifyResetToken: (token: string) => any;
   resetPassword: (data: IChangePasswordInfo) => any;
@@ -24,6 +26,7 @@ interface AuthContextType {
   sendRequestAccount: (data: any) => any;
   getUserById: (id: string) => any;
   changeUserPassword: (data: IResetPasswordInfo) => any;
+  deduceCredit: any;
 }
 
 /**
@@ -44,6 +47,7 @@ export function AuthProvider({
   children: React.ReactNode;
 }): JSX.Element {
   const [user, setUser] = useState<CurrentUser>({} as CurrentUser);
+  const [credit, setCredit] = useState<number>(0);
   const [isDarkMode, setIsDarkMode] = useState<any>(false);
   const [currentImage, setCurrentImage] = useState<any>(
     isDarkMode ? darkImage : lightImage
@@ -60,6 +64,15 @@ export function AuthProvider({
 
   const login = async (email: string, password: string) => {
     const res = await authService.login(email, password);
+    if (res.token) {
+      authService.setAccessToken(res.token);
+      await setCurrentUser();
+    }
+    return res;
+  };
+
+  const loginSSO = async (ssoToken) => {
+    const res = await authService.loginSSO(ssoToken);
     if (res.token) {
       authService.setAccessToken(res.token);
       await setCurrentUser();
@@ -95,6 +108,12 @@ export function AuthProvider({
   const setCurrentUser = async () => {
     const userData = await getCurrentUser();
     setUser(userData?.user);
+    setCredit(userData?.user?.credits || 0);
+  };
+
+  const deduceCredit = async (deducedValue: number) => {
+    const updatedCredit = credit - deducedValue;
+    setCredit(updatedCredit);
   };
 
   const sendRequestAccount = async (data: any) => {
@@ -120,7 +139,10 @@ export function AuthProvider({
   const value = {
     user,
     setCurrentUser,
+    credit,
+    deduceCredit,
     login,
+    loginSSO,
     logout,
     sendResetRequest,
     verifyResetToken,
@@ -156,7 +178,7 @@ export function useAuth(): AuthContextType {
 export function RequireAuth({ children }: { children: JSX.Element }): any {
   const accessToken = authService.getAccessToken();
   if (!accessToken) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/home" replace />;
   }
 
   return children;

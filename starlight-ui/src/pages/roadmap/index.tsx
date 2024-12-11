@@ -5,9 +5,7 @@ import RoadMap from "./generate-roadmap";
 const Roadmaps: React.FC = () => {
   return (
     <div>
-      <div>
-        <RoadMap />
-      </div>
+      <RoadMap />
     </div>
   );
 };

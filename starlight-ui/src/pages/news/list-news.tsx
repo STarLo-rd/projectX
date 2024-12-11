@@ -2,7 +2,24 @@ import React from "react";
 import { Image } from "antd";
 import noImage from "/image.png"; // Import a default image for when image_url is not available
 
-const ListNews: React.FC = ({ articles }) => {
+interface Article {
+  title: string;
+  description: string;
+  url: string;
+  image_url: string;
+  pubDate: string;
+  source_url?: string;
+  source_icon: string;
+  source: {
+    name: string;
+  };
+}
+
+interface ListNewsProps {
+  articles: Article[];
+}
+
+const ListNews: React.FC<ListNewsProps> = ({ articles }) => {
   console.log(articles);
   const truncateDescription = (description: string) => {
     const maxLength = 250;
